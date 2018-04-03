@@ -4,7 +4,7 @@ use actix_web::*;
 use diesel::prelude::*;
 use futures::future::Future;
 use handler::index::State;
-use model::db::DbExecutor;
+use model::db::ConnDsl;
 use std::time::SystemTime;
 use utils::token::verify_token;
 use model::response::UserInfoMsgs;
@@ -66,12 +66,13 @@ pub fn user_info(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error
         }
 }
 
-impl Handler<UserInfo> for DbExecutor {
+impl Handler<UserInfo> for ConnDsl {
     type Result = Result<UserInfoMsgs, Error>;
     fn handle(&mut self, user_info: UserInfo, _: &mut Self::Context) -> Self::Result {
         use utils::schema::users::dsl::*;
         let user_id: i32 = user_info.user_id.parse().unwrap();
-        let user_result =  users.filter(&id.eq(&user_id)).load::<User>(&self.0);
+        let conn = &self.0.get().unwrap();
+        let user_result =  users.filter(&id.eq(&user_id)).load::<User>(conn);
         let login_user = match user_result {
             Ok(ref user_some) => match user_some.first() {
                 Some(a_user) => Some(a_user.clone()),

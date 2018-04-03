@@ -23,13 +23,16 @@ extern crate postgres;
 
 use actix::*;
 use actix_web::*;
+use diesel::prelude::PgConnection;
+use diesel::r2d2::{ Pool, ConnectionManager };
 
 mod api;
 mod handler;
 mod model;
 mod utils;
 
-use model::db::DbExecutor;
+use model::db::ConnDsl;
+// use model::pg::PoolPg;
 use utils::cors;
 use handler::index::{ State, home, path };
 use handler::auth::{ signup, signin };
@@ -41,7 +44,11 @@ fn main() {
     ::std::env::set_var("RUST_BACKTRACE", "1");
     env_logger::init();
     let sys = actix::System::new("webapp");
-    let addr = SyncArbiter::start( num_cpus::get() * 4, || DbExecutor::new());
+
+    let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let manager = ConnectionManager::<PgConnection>::new(db_url);
+    let conn = Pool::builder().build(manager).expect("Failed to create pool.");
+    let addr = SyncArbiter::start( num_cpus::get() * 4, move || { ConnDsl(conn.clone()) });
     // let addr_pg = SyncArbiter::start( num_cpus::get() * 4, || PoolPg::new());
     HttpServer::new(
         move || Application::with_state(State{

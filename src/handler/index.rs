@@ -1,11 +1,11 @@
 use actix::*;
 use actix_web::*;
 use std::path::Path;
-use model::db::DbExecutor;
+use model::db::ConnDsl;
 use model::pg::PoolPg;
 
 pub struct State {
-    pub db: Addr<Syn, DbExecutor>,
+    pub db: Addr<Syn, ConnDsl>,
     // pub db_pg: Addr<Syn, PoolPg>,
 }
 

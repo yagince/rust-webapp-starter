@@ -7,7 +7,7 @@ use handler::index::State;
 use utils::schema::article;
 use std::time::SystemTime;
 use model::article::{ Article, ArticleId, NewArticle, ArticleNew };
-use model::db::DbExecutor;
+use model::db::ConnDsl;
 use model::response::{ ArticleListMsgs, ArticleMsgs, Msgs };
 
 impl Message for ArticleId {
@@ -30,11 +30,12 @@ pub fn article(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=E
 
 }
 
-impl Handler<ArticleId> for DbExecutor {
+impl Handler<ArticleId> for ConnDsl {
     type Result = Result<ArticleMsgs, Error>;
     fn handle(&mut self, article_id: ArticleId, _: &mut Self::Context) -> Self::Result {
         use utils::schema::article::dsl::*;
-        let article_result =  article.filter(&id.eq(&article_id.article_id)).load::<Article>(&self.0);
+        let conn = &self.0.get().unwrap();
+        let article_result =  article.filter(&id.eq(&article_id.article_id)).load::<Article>(conn);
         let the_article = match article_result {
             Ok(ref some_article) => match some_article.first() {
                 Some(a_article) => Some(a_article.clone()),
@@ -78,12 +79,6 @@ impl Handler<ArticleId> for DbExecutor {
 }
 
 
-
-
-
-
-
-
 pub struct ArticleList;
 impl Message for ArticleList {
     type Result = Result<ArticleListMsgs, Error>;
@@ -100,12 +95,13 @@ pub fn article_list(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Er
     }).responder()
 }
 
-impl Handler<ArticleList> for DbExecutor {
+impl Handler<ArticleList> for ConnDsl {
     type Result = Result<ArticleListMsgs, Error>;
     fn handle(&mut self, article_list: ArticleList, _: &mut Self::Context) -> Self::Result {
         use utils::schema::article::dsl::*;
         let mut article_result: Vec<Article> = vec![];
-        article_result = article.load::<Article>(&self.0).expect("Error");
+        let conn = &self.0.get().unwrap();
+        article_result = article.load::<Article>(conn).expect("Error");
         Ok(ArticleListMsgs { 
                 status: 200,
                 message : "article_list result.".to_string(),
@@ -139,7 +135,7 @@ impl Message for ArticleNew {
     type Result = Result<Msgs, Error>;
 }
 
-impl Handler<ArticleNew> for DbExecutor {
+impl Handler<ArticleNew> for ConnDsl {
     type Result = Result<Msgs, Error>;
     fn handle(&mut self, article_new: ArticleNew, _: &mut Self::Context) -> Self::Result {
         use utils::schema::article::dsl::*;
@@ -150,7 +146,8 @@ impl Handler<ArticleNew> for DbExecutor {
                 body: &article_new.content,
                 created_at: SystemTime::now(),
         };
-        diesel::insert_into(article).values(&new_article).execute(&self.0).expect("Error Article Publish");
+        let conn = &self.0.get().unwrap();
+        diesel::insert_into(article).values(&new_article).execute(conn).expect("Error Article Publish");
         Ok(Msgs { 
                     status: 200,
                     message : "Article Publish Successful.".to_string(),

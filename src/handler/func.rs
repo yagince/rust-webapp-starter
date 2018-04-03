@@ -8,7 +8,7 @@ use bcrypt::{DEFAULT_COST, hash, verify};
 
 use model::user::{User,NewUser,SignupUser,SigninUser};
 use model::response::{ Msgs, SigninMsgs };
-use model::db::DbExecutor;
+use model::db::ConnDsl;
 
 impl Message for SignupUser {
     type Result = Result<Msgs, Error>;
@@ -17,7 +17,7 @@ impl Message for SigninUser {
     type Result = Result<SigninMsgs, Error>;
 }
 
-impl Handler<SignupUser> for DbExecutor {
+impl Handler<SignupUser> for ConnDsl {
     type Result = Result<Msgs, Error>;
     fn handle(&mut self, signup_user: SignupUser, _: &mut Self::Context) -> Self::Result {
         if &signup_user.password == &signup_user.confirm_password {
@@ -32,7 +32,8 @@ impl Handler<SignupUser> for DbExecutor {
                     password: &hash_password,
                     created_at: SystemTime::now(),
                 };
-                diesel::insert_into(users).values(&new_user).execute(&self.0).expect("Error inserting person");
+                let conn = &self.0.get().unwrap();
+                diesel::insert_into(users).values(&new_user).execute(conn).expect("Error inserting person");
                 Ok(Msgs { 
                         status: 200,
                         message : "Successful Signup.".to_string(),
@@ -46,11 +47,12 @@ impl Handler<SignupUser> for DbExecutor {
     }
 }
 
-impl Handler<SigninUser> for DbExecutor {
+impl Handler<SigninUser> for ConnDsl {
     type Result = Result<SigninMsgs, Error>;
     fn handle(&mut self, signin_user: SigninUser, _: &mut Self::Context) -> Self::Result {
         use utils::schema::users::dsl::*;
-        let user_result =  users.filter(&username.eq(&signin_user.username)).load::<User>(&self.0);
+        let conn = &self.0.get().unwrap();
+        let user_result =  users.filter(&username.eq(&signin_user.username)).load::<User>(conn);
         let login_user = match user_result {
             Ok(ref user_some) => match user_some.first() {
                 Some(a_user) => Some(a_user.clone()),
