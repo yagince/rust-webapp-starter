@@ -3,8 +3,8 @@
       <mnav id="mnav"></mnav>
       <div id="content">
           <div id="title">    
-            <router-link to="/a/access">SignIn &emsp;|&emsp;</router-link>
-            <router-link to="/a/signup">SignUp</router-link> 
+            <router-link to="/a/access">Sign In &emsp;|&emsp;</router-link>
+            <router-link to="/a/signup">Sign Up</router-link> 
           </div>
             <input type="text" name="username" placeholder="Username" v-model="Username" />
             <input type="password" name="password" placeholder="Password" v-model="Password" /><br/>
@@ -12,8 +12,8 @@
             <label class="checkbox">
             <input type="checkbox" name="remember" value="1" id="checks" checked="true"/>
             <span class="check" for="checks"></span> 
-          </label>Remmber
-          <span> &emsp;&emsp;<router-link to="/settings/missing_pwd" style="text-decoration-line: none;">Forget Password?</router-link></span><br/>
+          </label>Remember
+          <span> &emsp;&emsp;<router-link to="/settings/missing_pwd" style="text-decoration-line: none;">Forgot Password?</router-link></span><br/>
           </div>
           <button id="submit" @click="signin">Sign in</button><br/>
           <div id="text"> Login with social </div>

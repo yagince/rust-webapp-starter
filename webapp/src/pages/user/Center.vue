@@ -3,7 +3,7 @@
       <mnav id="mnav"></mnav>
       <div id="content">
         <div id="user-center"><p>Uaer Center</p></div>
-        <p><strong>Welcom user center. you must login first to seen bellow user info!</strong></p>
+        <p><strong>Welcome to the user center. You must first login to see user info!</strong></p>
         <p>email : {{ email }}</p>
         <p>username ：{{ username }}</p>
         <p>created_time : {{ created_time }}</p>

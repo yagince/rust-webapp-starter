@@ -3,8 +3,8 @@
    <mnav id="mnav"></mnav>
    <div id="content">
         <div id="title">    
-            <router-link to="/a/access">SignIn &emsp;|&emsp;</router-link>
-            <router-link to="/a/signup">SignUp</router-link> 
+            <router-link to="/a/access">Sign In &emsp;|&emsp;</router-link>
+            <router-link to="/a/signup">Sign Up</router-link> 
         </div> 
           <input type="text" name="username" placeholder="Username" v-model="Username"  required />
           <input type="text" name="email" placeholder="E-mail" v-model="Email"  required />
@@ -12,9 +12,9 @@
           <input type="password" name="confirm_password" placeholder="Confirm password" v-model="ConfirmPassword"  required/><br/>
           
           <input type="checkbox" id="tos" name="tos" v-model="tos_checked"/>
-          <label for="tos">Accept the <router-link to="">Terms of service</router-link></label><br/>
+          <label for="tos">Accept the <router-link to="">Terms of Service</router-link></label><br/>
           <input type="checkbox" id="news" name="news" v-model="news_checked"/>
-          <label for="news">Subscribe to our newsltetter !</label><br/>
+          <label for="news">Subscribe to our newsletter!</label><br/>
 
           <button id="submit" @click="signup">Sign up</button>
         
