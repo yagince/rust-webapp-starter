@@ -1,7 +1,7 @@
 <template>
   <div >
     <mnav id="mnav"></mnav>
-      <h1 id="content">Not Found. </h1>
+      <h1 id="content">Not Found.</h1>
   </div>
 </template>
 
