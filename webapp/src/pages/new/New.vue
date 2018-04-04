@@ -6,7 +6,7 @@
             <form id="form" >
                     <div id="topic-group">
                         <span  id="category">
-                                <select v-if="username" name="category" v-model="category" id="category-control" >
+                                <select v-if="username" name="category" v-model="Category" id="category-control" >
                                     <option value="Topic">Topic <span class="icon-arrow"></span></option>
                                     <option value="Share">Share</option>
                                     <option value="Article">Article</option>
@@ -23,7 +23,7 @@
                                     <option value="Server">Server</option>
                                     <option value="Client">Wasm</option>
                                 </select>
-                                <select v-else name="category" v-model="category" id="category-control">
+                                <select v-else name="category" v-model="Category" id="category-control">
                                     <option value="Topic">Topic</option>
                                     <option value="Share">Share</option>
                                     <option value="Article">Article</option>
@@ -40,7 +40,7 @@
                                 <textarea name="content" v-model="Content" placeholder="Write new Article in markdown!"></textarea>
                     </div>
                     <div id="new">
-                                <button type="submit" id="submit" @click="publish" ><span class="tip"> Publish Article </span></button>
+                                <button type="submit" id="submit" @click="publish" ><span class="tip"> Publish </span></button>
                     </div>
             </form>
         </div>

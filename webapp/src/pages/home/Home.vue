@@ -34,7 +34,7 @@
                           </span>                        
                       </div>
                   </div>
-                  <div id="items" v-for="(article, index) in article_list" :key="index">
+                  <div id="items" v-for="(article, index) in article_list">
                       <div id="item" v-if="article.category !== 'Announcement'">
                         <span id="item-title"><a :href="'/a/article/' + article.id" title="article.title"> {{ article.title }} </a></span>
                         <span id="right">
@@ -68,8 +68,7 @@ export default {
   mounted: function() {
     axios.get('http://localhost:8000/api/article_list', auth.getAuthHeader())
       .then((response) => {
-        let articles = response.data.article_list
-        this.article_list = articles.reverse()
+        this.article_list = response.data.article_list.reverse()
         console.log(response.data.article_list)
         console.log(sessionStorage.getItem('token'))
         console.log(JSON.parse(sessionStorage.getItem('signin_user')).username)

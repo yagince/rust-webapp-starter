@@ -45,7 +45,9 @@ export default {
 #body {
     margin: 2rem auto;
 }
-
+a {
+    color: #0541af;
+}
 @media only screen and (max-width: 600px) {
     #content  {
       margin: 0.5rem auto;
