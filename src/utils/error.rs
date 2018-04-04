@@ -83,13 +83,13 @@ pub struct ErrorCode(pub u16);
 impl ErrorCode {
     pub fn to_str(&self) -> &str {
         match self.0 {
-            10004 => "资源不存在",
-            10005 => "权限不足",
-            20001 => "登录信息已过期",
-            20002 => "用户名或密码错误",
-            20003 => "用户已存在",
-            30001 => "文章不存在",
-            _ => "未知错误"
+            10004 => "No resources",
+            10005 => "No auth",
+            20001 => "Login time over",
+            20002 => "Erroe username or password",
+            20003 => "No user",
+            30001 => "No article",
+            _ => "Error Unknow"
         }
     }
 

@@ -23,7 +23,6 @@
                   </span>      
             </div>
             <div id="content">
-                  
                   <div id="items" v-for="(article, index) in article_list" :key="index">
                       <div id="announcement" v-if="article.category === 'Announcement'">
                           <span id="announcement-title"><a :href="'/a/article/' + article.id" title="article.title"> {{ article.title }} </a></span>
@@ -34,7 +33,9 @@
                               <span > {{ article.created_at }} </span>
                           </span>                        
                       </div>
-                      <div id="item" v-else>
+                  </div>
+                  <div id="items" v-for="(article, index) in article_list" :key="index">
+                      <div id="item">
                         <span id="item-title"><a :href="'/a/article/' + article.id" title="article.title"> {{ article.title }} </a></span>
                         <span id="right">
                             <span id="info"> {{ article.category }} </span>
@@ -67,7 +68,8 @@ export default {
   mounted: function() {
     axios.get('http://localhost:8000/api/article_list', auth.getAuthHeader())
       .then((response) => {
-        this.article_list = response.data.article_list
+        let articles = response.data.article_list
+        this.article_list = articles.reverse()
         console.log(response.data.article_list)
         console.log(sessionStorage.getItem('token'))
         console.log(JSON.parse(sessionStorage.getItem('signin_user')).username)
@@ -108,7 +110,7 @@ main {
 #center #title #right #info {
   padding-right: 4vw;
 }
-#center #items {
+#center #items #announcement, #center #items #item {
   line-height: 55px;
   border-bottom: 1px solid rgb(231, 238, 233);
 }

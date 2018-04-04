@@ -1,5 +1,5 @@
 # Rust-webapp-starter
-Rust single page webapp written in actix-web with vuejs.
+Rust single page webapp written in [actix-web](https://github.com/actix/actix-web) with vuejs.
 - Async stable Actix-web framework 
 - diesel, postgresql r2d2
 - SPA CORS JWT
