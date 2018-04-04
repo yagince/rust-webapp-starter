@@ -2,7 +2,7 @@
   <div  id="about">
       <mnav id="mnav"></mnav>
       <div id="content">
-          <p><strong>About</strong> Thos is the about page.</p> <br>
+          <p><strong>About</strong> This is the about page.</p> <br>
       </div><br>
   </div>
 </template>

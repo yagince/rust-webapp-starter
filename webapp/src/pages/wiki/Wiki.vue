@@ -2,7 +2,7 @@
   <div  id="wiki">
       <mnav id="mnav"></mnav>
       <div id="content">
-          <p><strong>Wiki</strong> Thos is the wiki page.</p> <br>
+          <p><strong>Wiki</strong> This is the wiki page.</p> <br>
       </div><br>
   </div>
 </template>

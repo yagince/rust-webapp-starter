@@ -2,7 +2,7 @@
     <div id="new">
         <mnav id="mnav"></mnav>
         <div id="content">
-            <div id="new-title"><p>New Publish</p></div>
+            <div id="new-title"><p>New Article</p></div>
             <form id="form" >
                     <div id="topic-group">
                         <span  id="category">
@@ -37,10 +37,10 @@
                         </span>
                     </div>    
                     <div id="new">
-                                <textarea name="content" v-model="Content" placeholder="Write new Publish in markdown!"></textarea>
+                                <textarea name="content" v-model="Content" placeholder="Write new Article in markdown!"></textarea>
                     </div>
                     <div id="new">
-                                <button type="submit" id="submit" @click="publish" ><span class="tip"> Publish </span></button>
+                                <button type="submit" id="submit" @click="publish" ><span class="tip"> Publish Article </span></button>
                     </div>
             </form>
         </div>
