@@ -11,6 +11,9 @@ export default {
 </script>
 
 <style>
+:root {
+    --purple: #99177d;
+}
 * {
     padding:0px; margin:0px;
     box-sizing: border-box;
@@ -19,7 +22,7 @@ a {
   text-decoration: none;
   color: inherit;
 }
-a:hover { color:#0c9e2b; }
+a:hover { color: var(--purple); }
 
 ul, ol, li {
     list-style: none;

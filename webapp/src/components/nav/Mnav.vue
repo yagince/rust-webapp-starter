@@ -51,6 +51,9 @@ export default {
 </script>
 
 <style lang="css" scoped>
+a {
+  color: inherit;
+}
 #line {
   position: fixed;
   zoom:1;

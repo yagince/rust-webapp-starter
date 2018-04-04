@@ -35,7 +35,7 @@
                       </div>
                   </div>
                   <div id="items" v-for="(article, index) in article_list" :key="index">
-                      <div id="item">
+                      <div id="item" v-if="article.category !== 'Announcement'">
                         <span id="item-title"><a :href="'/a/article/' + article.id" title="article.title"> {{ article.title }} </a></span>
                         <span id="right">
                             <span id="info"> {{ article.category }} </span>
@@ -117,6 +117,10 @@ main {
 #center #announcement {
   color: #eb15ce;
 }
+#center #items #item a {
+  color: #0541af;
+}
+
 #center #title-topic, #announcement-title, #item-title {
   padding: 0 2vw 0 1vw;
 }
