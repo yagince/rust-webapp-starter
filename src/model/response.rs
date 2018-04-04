@@ -1,6 +1,5 @@
 use model::user::User;
 use model::article::Article;
-use std::time::SystemTime;
 
 #[derive(Deserialize,Serialize, Debug)]
 pub struct Msgs {

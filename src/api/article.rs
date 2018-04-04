@@ -5,7 +5,7 @@ use diesel::prelude::*;
 use futures::future::Future;
 use handler::index::State;
 use utils::schema::article;
-use std::time::SystemTime;
+use chrono::{ Utc,NaiveDateTime };
 use model::article::{ Article, ArticleId, NewArticle, ArticleNew };
 use model::db::ConnDsl;
 use model::response::{ ArticleListMsgs, ArticleMsgs, Msgs };
@@ -66,7 +66,7 @@ impl Handler<ArticleId> for ConnDsl {
                             category: "".to_owned(),
                             title: "".to_owned(),
                             body: "".to_owned(),
-                            created_at: SystemTime::now(),
+                            created_at: Utc::now().naive_utc(),
                     };
                     Ok(ArticleMsgs { 
                             status: 400,
@@ -144,7 +144,7 @@ impl Handler<ArticleNew> for ConnDsl {
                 category: &article_new.category,
                 title: &article_new.title,
                 body: &article_new.content,
-                created_at: SystemTime::now(),
+                created_at: Utc::now().naive_utc(),
         };
         let conn = &self.0.get().unwrap();
         diesel::insert_into(article).values(&new_article).execute(conn).expect("Error Article Publish");

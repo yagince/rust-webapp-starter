@@ -3,7 +3,7 @@ use actix::*;
 use actix_web::*;
 use diesel::prelude::*;
 use utils::token;
-use std::time::SystemTime;
+use chrono::{ Utc,NaiveDateTime };
 use bcrypt::{DEFAULT_COST, hash, verify};
 
 use model::user::{User,NewUser,SignupUser,SigninUser};
@@ -30,7 +30,7 @@ impl Handler<SignupUser> for ConnDsl {
                     email: &signup_user.email,
                     username: &signup_user.username,
                     password: &hash_password,
-                    created_at: SystemTime::now(),
+                    created_at: Utc::now().naive_utc(),
                 };
                 let conn = &self.0.get().unwrap();
                 diesel::insert_into(users).values(&new_user).execute(conn).expect("Error inserting person");
@@ -65,7 +65,7 @@ impl Handler<SigninUser> for ConnDsl {
                 email: "".to_owned(),
                 username: "".to_owned(),
                 password: "".to_owned(),
-                created_at : SystemTime::now(),
+                created_at: Utc::now().naive_utc(),
         };
         match login_user {
             Some(login_user) => {

@@ -1,6 +1,6 @@
 use model::user::User;
 use utils::schema::article;
-use std::time::SystemTime;
+use chrono::NaiveDateTime;
 
 #[derive(Clone,Debug,Serialize,Deserialize,PartialEq,Queryable)]
 pub struct Article {
@@ -9,7 +9,7 @@ pub struct Article {
     pub category: String,
     pub title: String,
     pub body: String,
-    pub created_at: SystemTime,
+    pub created_at: NaiveDateTime,
 }
 
 
@@ -20,7 +20,7 @@ pub struct NewArticle<'a> {
     pub category: &'a str,
     pub title: &'a str,
     pub body: &'a str,
-    pub created_at: SystemTime,
+    pub created_at: NaiveDateTime,
 }
 
 #[derive(Deserialize,Serialize, Debug)]

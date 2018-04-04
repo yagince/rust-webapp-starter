@@ -5,7 +5,7 @@ use diesel::prelude::*;
 use futures::future::Future;
 use handler::index::State;
 use model::db::ConnDsl;
-use std::time::SystemTime;
+use chrono::{ Utc,NaiveDateTime };
 use utils::token::verify_token;
 use model::response::UserInfoMsgs;
 use model::user::{ User, UserInfo };
@@ -101,7 +101,7 @@ impl Handler<UserInfo> for ConnDsl {
                             email: "".to_owned(),
                             username: "".to_owned(),
                             password: "".to_owned(),
-                            created_at : SystemTime::now(),
+                            created_at: Utc::now().naive_utc(),
                     };
                     Ok(UserInfoMsgs { 
                             status: 400,
