@@ -51,35 +51,35 @@ fn main() {
     // let addr_pg = SyncArbiter::start( num_cpus::get() * 4, || PoolPg::new());
     HttpServer::new(
         move || Application::with_state(State{
-                db: addr.clone(),
-                // db_pg:addr_pg.clone(),
-            })
+            db: addr.clone(),
+            // db_pg:addr_pg.clone(),
+        })
             .middleware(middleware::Logger::default())
-            .resource("/", |r| r.f(home))
-            .resource(r"/a/{tail:.*}", |r| r.f(path))
+            .resource("/", |r| r.h(home))
+            .resource("/a/{tail:.*}", |r| r.h(path))
             .resource("/user/signup", |r| {
                 cors::options().register(r);
-                r.method(Method::POST).a(signup);
+                r.method(Method::POST).h(signup);
             })
             .resource("/user/signin", |r| {
                 cors::options().register(r);
-                r.method(Method::POST).a(signin);
+                r.method(Method::POST).h(signin);
             })
             .resource("/api/article_list", |r| {
                 cors::options().register(r);
-                r.method(Method::GET).a(article_list);
+                r.method(Method::GET).h(article_list);
             })
             .resource("/api/article_new", |r| {
                 cors::options().register(r);
-                r.method(Method::POST).a(article_new);
+                r.method(Method::POST).h(article_new);
             })
             .resource("/api/user_info", |r| {
                 cors::options().register(r);
-                r.method(Method::GET).a(user_info);
+                r.method(Method::GET).h(user_info);
             })
             .resource("/api/{article_id}", |r| {
                 cors::options().register(r);
-                r.method(Method::GET).a(article);
+                r.method(Method::GET).h(article);
             })
             .handler("/", fs::StaticFiles::new("public", true)))
         .bind("127.0.0.1:8000").unwrap()
