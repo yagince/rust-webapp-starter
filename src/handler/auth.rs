@@ -1,7 +1,9 @@
 use actix_web::*;
 use futures::future::Future;
+
 use handler::index::State;
-use model::user::{User,NewUser,SignupUser,SigninUser};
+use model::user::{User, NewUser, SignupUser, SigninUser};
+
 
 pub fn signup(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Error>> {
     req.clone().json()                     
@@ -22,6 +24,7 @@ pub fn signup(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Er
             })
         }).responder()
 }
+
 
 pub fn signin(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Error>> {
     let executor = req.state().db.clone();

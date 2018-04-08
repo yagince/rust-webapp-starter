@@ -10,4 +10,3 @@ pub fn options() -> cors::Cors {
         .max_age(3600)
         .finish().expect("Can not create CORS middleware")
 }
-    

@@ -3,12 +3,14 @@ use actix::*;
 use actix_web::*;
 use diesel::prelude::*;
 use futures::future::Future;
-use chrono::{ Utc,NaiveDateTime };
-use utils::token::verify_token;
-use handler::index::State;
+use chrono::{Utc, NaiveDateTime};
+
 use model::db::ConnDsl;
 use model::response::UserInfoMsgs;
-use model::user::{ User, UserInfo };
+use model::user::{User, UserInfo};
+use handler::index::State;
+use utils::token::verify_token;
+
 
 impl Message for UserInfo {
     type Result = Result<UserInfoMsgs, Error>;
@@ -49,6 +51,7 @@ pub fn user_info(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse
 
 impl Handler<UserInfo> for ConnDsl {
     type Result = Result<UserInfoMsgs, Error>;
+
     fn handle(&mut self, user_info: UserInfo, _: &mut Self::Context) -> Self::Result {
         use utils::schema::users::dsl::*;
         let user_id: i32 = user_info.user_id.parse().map_err(error::ErrorBadRequest)?;

@@ -6,19 +6,22 @@ use utils::token;
 use chrono::{ Utc,NaiveDateTime };
 use bcrypt::{DEFAULT_COST, hash, verify};
 
-use model::user::{User,NewUser,SignupUser,SigninUser};
-use model::response::{ Msgs, SigninMsgs };
+use model::user::{User, NewUser, SignupUser, SigninUser};
+use model::response::{Msgs, SigninMsgs};
 use model::db::ConnDsl;
+
 
 impl Message for SignupUser {
     type Result = Result<Msgs, Error>;
 }
+
 impl Message for SigninUser {
     type Result = Result<SigninMsgs, Error>;
 }
 
 impl Handler<SignupUser> for ConnDsl {
     type Result = Result<Msgs, Error>;
+
     fn handle(&mut self, signup_user: SignupUser, _: &mut Self::Context) -> Self::Result {
         if &signup_user.password == &signup_user.confirm_password {
                 use utils::schema::users::dsl::*;
@@ -49,6 +52,7 @@ impl Handler<SignupUser> for ConnDsl {
 
 impl Handler<SigninUser> for ConnDsl {
     type Result = Result<SigninMsgs, Error>;
+
     fn handle(&mut self, signin_user: SigninUser, _: &mut Self::Context) -> Self::Result {
         use utils::schema::users::dsl::*;
         let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;

@@ -3,9 +3,10 @@ use actix::*;
 use actix_web::*;
 use diesel::prelude::*;
 use futures::future::Future;
-use handler::index::State;
+use chrono::{Utc, NaiveDateTime};
+
 use utils::schema::article;
-use chrono::{Utc,NaiveDateTime};
+use handler::index::State;
 use model::article::{Article, ArticleId, NewArticle, ArticleNew};
 use model::db::ConnDsl;
 use model::response::{ArticleListMsgs, ArticleMsgs, Msgs};
@@ -13,22 +14,25 @@ use model::response::{ArticleListMsgs, ArticleMsgs, Msgs};
 impl Message for ArticleId {
     type Result = Result<ArticleMsgs, Error>;
 }
-pub fn article(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse, Error=Error>>, Error> {
-        let header_article_id = req.match_info().get("article_id").unwrap();
-        let article_id: i32 = header_article_id.parse().map_err(error::ErrorBadRequest)?;
-        Ok(req.state().db.send(ArticleId{article_id})         
-                   .from_err()
-                    .and_then(|res| {
-                            match res {
-                                Ok(article) => Ok(httpcodes::HTTPOk.build().json(article)?),
-                                Err(_) => Ok(httpcodes::HTTPInternalServerError.into()),
-                            }
-                    }).responder())                   
 
+pub fn article(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse, Error=Error>>, Error>{
+    let header_article_id = req.match_info().get("article_id").unwrap();
+    let article_id: i32 = header_article_id.parse().map_err(error::ErrorBadRequest)?;
+    Ok(req.state().db.send(ArticleId{article_id})
+       .from_err()
+       .and_then(|res| {
+           match res {
+               Ok(article) =>
+                   Ok(httpcodes::HTTPOk.build().json(article)?),
+               Err(_) =>
+                   Ok(httpcodes::HTTPInternalServerError.into()),
+           }
+       }).responder())
 }
 
 impl Handler<ArticleId> for ConnDsl {
     type Result = Result<ArticleMsgs, Error>;
+
     fn handle(&mut self, article_id: ArticleId, _: &mut Self::Context) -> Self::Result {
         use utils::schema::article::dsl::*;
         let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
@@ -70,6 +74,7 @@ impl Handler<ArticleId> for ConnDsl {
 
 
 pub struct ArticleList;
+
 impl Message for ArticleList {
     type Result = Result<ArticleListMsgs, Error>;
 }
@@ -79,14 +84,17 @@ pub fn article_list(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Er
         .from_err()
         .and_then(|res| {
             match res {
-                Ok(article_list) => Ok(httpcodes::HTTPOk.build().json(article_list)?),
-                Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
+                Ok(article_list) =>
+                    Ok(httpcodes::HTTPOk.build().json(article_list)?),
+                Err(_) =>
+                    Ok(httpcodes::HTTPInternalServerError.into()),
             }
         }).responder()
 }
 
 impl Handler<ArticleList> for ConnDsl {
     type Result = Result<ArticleListMsgs, Error>;
+
     fn handle(&mut self, article_list: ArticleList, _: &mut Self::Context) -> Self::Result {
         use utils::schema::article::dsl::*;
         let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
@@ -125,8 +133,10 @@ impl Message for ArticleNew {
 
 impl Handler<ArticleNew> for ConnDsl {
     type Result = Result<Msgs, Error>;
+
     fn handle(&mut self, article_new: ArticleNew, _: &mut Self::Context) -> Self::Result {
         use utils::schema::article::dsl::*;
+
         let new_article = NewArticle {
             user_id: article_new.user_id,
             category: &article_new.category,
