@@ -12,6 +12,7 @@ pub struct State {
 pub fn home(_req: HttpRequest<State>) -> Result<fs::NamedFile> {
     Ok(fs::NamedFile::open(Path::new("public/index.html"))?)
 }
+
 pub fn path(_req: HttpRequest<State>) -> Result<fs::NamedFile> {
     Ok(fs::NamedFile::open(Path::new("public/index.html"))?)
 }

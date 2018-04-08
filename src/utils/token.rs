@@ -28,10 +28,10 @@ pub fn generate_token(user_id: String) -> Result<String> {
 	Ok(token)
 }
 
-pub fn verify_token(token: String) -> Result<String> {
+pub fn verify_token(token: &str) -> Result<String> {
 	let utc: DateTime<Utc> = Utc::now();
 
-	let token = jwt::decode::<Token>(KEY, token)?;
+	let token = jwt::decode::<Token>(KEY, token.to_owned())?;
 
 	if token.date + EXPIRATION_TIME < utc.timestamp() {
 		return Err(ErrorCode(20001).into())

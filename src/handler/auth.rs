@@ -4,11 +4,10 @@ use handler::index::State;
 use model::user::{User,NewUser,SignupUser,SigninUser};
 
 pub fn signup(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Error>> {
-    let executor = req.state().db.clone();
-    req.json()                     
+    req.clone().json()                     
        .from_err()
        .and_then(move |signup_user: SignupUser| {  
-            executor.send(SignupUser{ 
+            req.state().db.send(SignupUser{ 
                 username: signup_user.username,
                 email: signup_user.email,
                 password: signup_user.password,
@@ -26,10 +25,10 @@ pub fn signup(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Er
 
 pub fn signin(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Error>> {
     let executor = req.state().db.clone();
-    req.json()                     
+    req.clone().json()                   
        .from_err()
        .and_then(move |signin_user: SigninUser| {  
-            executor.send(SigninUser{ 
+            req.state().db.send(SigninUser{ 
                 username: signin_user.username,
                 password: signin_user.password,
             })         
