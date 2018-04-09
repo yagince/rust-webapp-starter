@@ -1,4 +1,4 @@
-#![allow(warnings)]
+// #![allow(warnings)]
 
 #[macro_use] extern crate diesel;
 #[macro_use] extern crate serde_derive;
@@ -15,9 +15,6 @@ extern crate bcrypt;
 extern crate http;
 extern crate ring;
 extern crate data_encoding;
-extern crate regex;
-extern crate r2d2;
-extern crate r2d2_postgres;
 extern crate postgres;
 
 use actix::*;
@@ -31,7 +28,6 @@ mod model;
 mod utils;
 
 use model::db::ConnDsl;
-// use model::pg::PoolPg;
 use utils::cors;
 use handler::index::{ State, home, path };
 use handler::auth::{ signup, signin };
@@ -48,12 +44,8 @@ fn main() {
     let manager = ConnectionManager::<PgConnection>::new(db_url);
     let conn = Pool::builder().build(manager).expect("Failed to create pool.");
     let addr = SyncArbiter::start( num_cpus::get() * 4, move || { ConnDsl(conn.clone()) });
-    // let addr_pg = SyncArbiter::start( num_cpus::get() * 4, || PoolPg::new());
     HttpServer::new(
-        move || Application::with_state(State{
-            db: addr.clone(),
-            // db_pg:addr_pg.clone(),
-        })
+        move || Application::with_state(State{ db: addr.clone()})
             .middleware(middleware::Logger::default())
             .resource("/", |r| r.h(home))
             .resource("/a/{tail:.*}", |r| r.h(path))

@@ -1,7 +1,7 @@
 use actix::*;
 use diesel::prelude::PgConnection;
 use diesel::r2d2::{ Pool, ConnectionManager };
-use dotenv;
+// use dotenv;
 
 // actix-web DbExecutor
 

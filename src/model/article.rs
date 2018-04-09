@@ -1,6 +1,8 @@
-use model::user::User;
+use actix::*;
+use actix_web::*;
 use utils::schema::article;
 use chrono::NaiveDateTime;
+use model::response::{ArticleListMsgs, ArticleMsgs, Msgs};
 
 #[derive(Clone,Debug,Serialize,Deserialize,PartialEq,Queryable)]
 pub struct Article {
@@ -11,7 +13,6 @@ pub struct Article {
     pub body: String,
     pub created_at: NaiveDateTime,
 }
-
 
 #[derive(Serialize,Deserialize,Insertable,Debug, Clone)]
 #[table_name="article"]
@@ -34,4 +35,18 @@ pub struct ArticleNew {
 #[derive(Deserialize,Serialize, Debug)]
 pub struct ArticleId {
     pub article_id: i32,
+}
+
+pub struct ArticleList;
+
+impl Message for ArticleList {
+    type Result = Result<ArticleListMsgs, Error>;
+}
+
+impl Message for ArticleId {
+    type Result = Result<ArticleMsgs, Error>;
+}
+
+impl Message for ArticleNew {
+    type Result = Result<Msgs, Error>;
 }

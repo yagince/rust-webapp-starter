@@ -1,5 +1,8 @@
+use actix::*;
+use actix_web::*;
 use utils::schema::users;
 use chrono::NaiveDateTime;
+use model::response::{Msgs, SigninMsgs, UserInfoMsgs};
 
 #[derive(Debug,Serialize,Deserialize,PartialEq,Identifiable,Queryable)]
 pub struct User {
@@ -35,4 +38,16 @@ pub struct SigninUser {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UserInfo {
     pub user_id: String,
+}
+
+impl Message for SignupUser {
+    type Result = Result<Msgs, Error>;
+}
+
+impl Message for SigninUser {
+    type Result = Result<SigninMsgs, Error>;
+}
+
+impl Message for UserInfo {
+    type Result = Result<UserInfoMsgs, Error>;
 }

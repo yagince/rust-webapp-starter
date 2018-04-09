@@ -19,11 +19,8 @@ actix = "^0.5"
 actix-web = "^0.4"
 http = "^0.1.0"
 postgres = {version= "^0.15.0", features = ["with-chrono"]}
-r2d2 = "^0.8.0"
-r2d2_postgres = "^0.14.0"
 dotenv = "^0.10.0"
 chrono = { version = "0.4", features = ["serde"] }
-regex = "^0.2.0"
 bcrypt = "^0.1.0"
 env_logger = "^0.5.0"
 futures = "^0.1.0"

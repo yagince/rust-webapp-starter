@@ -3,17 +3,13 @@ use actix::*;
 use actix_web::*;
 use diesel::prelude::*;
 use futures::future::Future;
-use chrono::{Utc, NaiveDateTime};
+use chrono::Utc;
 
-use utils::schema::article;
 use handler::index::State;
-use model::article::{Article, ArticleId, NewArticle, ArticleNew};
+use model::article::{Article, ArticleList, ArticleId, NewArticle, ArticleNew};
 use model::db::ConnDsl;
 use model::response::{ArticleListMsgs, ArticleMsgs, Msgs};
 
-impl Message for ArticleId {
-    type Result = Result<ArticleMsgs, Error>;
-}
 
 pub fn article(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse, Error=Error>>, Error>{
     let header_article_id = req.match_info().get("article_id").unwrap();
@@ -72,13 +68,6 @@ impl Handler<ArticleId> for ConnDsl {
     }
 }
 
-
-pub struct ArticleList;
-
-impl Message for ArticleList {
-    type Result = Result<ArticleListMsgs, Error>;
-}
-
 pub fn article_list(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Error>> {
     req.state().db.send(ArticleList)
         .from_err()
@@ -125,10 +114,6 @@ pub fn article_new(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Err
                 }
             })
         }).responder()
-}
-
-impl Message for ArticleNew {
-    type Result = Result<Msgs, Error>;
 }
 
 impl Handler<ArticleNew> for ConnDsl {

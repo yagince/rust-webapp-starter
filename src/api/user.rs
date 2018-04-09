@@ -1,20 +1,14 @@
-use diesel;
 use actix::*;
 use actix_web::*;
 use diesel::prelude::*;
 use futures::future::Future;
-use chrono::{Utc, NaiveDateTime};
+use chrono::Utc;
 
 use model::db::ConnDsl;
 use model::response::UserInfoMsgs;
 use model::user::{User, UserInfo};
 use handler::index::State;
 use utils::token::verify_token;
-
-
-impl Message for UserInfo {
-    type Result = Result<UserInfoMsgs, Error>;
-}
 
 pub fn user_info(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse, Error=Error>>, Error> {
         let header_token = req.headers().get("Authorization").ok_or_else(|| error::ErrorForbidden("Authorization is required"))?;
