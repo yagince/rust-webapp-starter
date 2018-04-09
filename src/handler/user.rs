@@ -1,37 +1,14 @@
 use diesel;
+use diesel::prelude::*;
 use actix::*;
 use actix_web::*;
-use futures::future::Future;
-use diesel::prelude::*;
-use utils::token;
 use chrono::Utc;
 use bcrypt::{DEFAULT_COST, hash, verify};
+use utils::token;
 
-use handler::index::State;
-use model::user::{User, NewUser, SignupUser, SigninUser};
-use model::response::{Msgs, SigninMsgs};
+use model::user::{User, NewUser, SignupUser, SigninUser, UserInfo};
+use model::response::{Msgs, SigninMsgs, UserInfoMsgs};
 use model::db::ConnDsl;
-
-
-pub fn signup(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Error>> {
-    req.clone().json()                     
-       .from_err()
-       .and_then(move |signup_user: SignupUser| {  
-            req.state().db.send(SignupUser{ 
-                username: signup_user.username,
-                email: signup_user.email,
-                password: signup_user.password,
-                confirm_password: signup_user.confirm_password,
-            })         
-            .from_err()
-            .and_then(|res| {
-                match res {
-                    Ok(signup_msg) => Ok(httpcodes::HTTPOk.build().json(signup_msg)?),
-                    Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
-                }
-            })
-        }).responder()
-}
 
 impl Handler<SignupUser> for ConnDsl {
     type Result = Result<Msgs, Error>;
@@ -62,24 +39,6 @@ impl Handler<SignupUser> for ConnDsl {
             })
         }
     }
-}
-
-pub fn signin(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Error>> {
-    req.clone().json()                   
-       .from_err()
-       .and_then(move |signin_user: SigninUser| {  
-            req.state().db.send(SigninUser{ 
-                username: signin_user.username,
-                password: signin_user.password,
-            })         
-            .from_err()
-            .and_then(|res| {
-                match res {
-                    Ok(signin_msg) => Ok(httpcodes::HTTPOk.build().json(signin_msg)?),
-                    Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
-                }
-            })
-        }).responder()
 }
 
 impl Handler<SigninUser> for ConnDsl {
@@ -134,6 +93,47 @@ impl Handler<SigninUser> for ConnDsl {
                     message: "Signin failure.".to_string(),
                 })
             }
+        }
+    }
+}
+
+impl Handler<UserInfo> for ConnDsl {
+    type Result = Result<UserInfoMsgs, Error>;
+
+    fn handle(&mut self, user_info: UserInfo, _: &mut Self::Context) -> Self::Result {
+        use utils::schema::users::dsl::*;
+        let user_id: i32 = user_info.user_id.parse().map_err(error::ErrorBadRequest)?;
+        let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
+        let login_user =  users.filter(&id.eq(&user_id)).load::<User>(conn).map_err(error::ErrorInternalServerError)?.pop();
+        match login_user {
+            Some(login_user) => {
+                    let current_user = User {
+                            id: login_user.id,
+                            email: login_user.email,
+                            username: login_user.username,
+                            password: login_user.password,
+                            created_at : login_user.created_at,
+                    };
+                    Ok(UserInfoMsgs { 
+                            status: 200,
+                            message : "The  current_user info.".to_string(),
+                            current_user: current_user,
+                    })
+            },
+            None => {
+                    let no_user = User {
+                            id: 0,
+                            email: "".to_owned(),
+                            username: "".to_owned(),
+                            password: "".to_owned(),
+                            created_at: Utc::now().naive_utc(),
+                    };
+                    Ok(UserInfoMsgs { 
+                            status: 400,
+                            message : "error.".to_string(),
+                            current_user: no_user,
+                    })
+            },
         }
     }
 }

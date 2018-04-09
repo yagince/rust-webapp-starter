@@ -1,4 +1,4 @@
-#![allow(warnings)]
+// #![allow(warnings)]
 
 #[macro_use] extern crate diesel;
 #[macro_use] extern crate serde_derive;
@@ -29,8 +29,8 @@ mod utils;
 
 use model::db::ConnDsl;
 use utils::cors;
-use handler::index::{ State, home, path };
-use handler::auth::{ signup, signin };
+use api::index::{ State, home, path };
+use api::auth::{ signup, signin };
 use api::article::{ article,article_list, article_new };
 use api::user::user_info;
 
