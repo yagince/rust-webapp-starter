@@ -7,8 +7,8 @@ export default {
         checkAuth()
     },
     checkAuth() {
-		var jwt = localStorage.getItem('id_token');
-		var role = localStorage.getItem('user_role');
+		var jwt = sessionStorage.getItem('token');
+		var role = sessionStorage.getItem('signin_user');
 		if (jwt) {
 			this.user.authenticated = true;
 			this.user.role = role;

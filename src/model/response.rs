@@ -1,6 +1,11 @@
 use model::user::User;
 use model::article::Article;
 
+pub enum MyError {
+    NotFound,
+    DatabaseError,
+}
+
 #[derive(Deserialize,Serialize, Debug)]
 pub struct Msgs {
     pub status: i32,

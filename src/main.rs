@@ -29,10 +29,10 @@ mod utils;
 
 use model::db::ConnDsl;
 use utils::cors;
-use api::index::{ State, home, path };
-use api::auth::{ signup, signin };
-use api::article::{ article,article_list, article_new };
-use api::user::user_info;
+use api::index::{State, home, path};
+use api::auth::{signup, signin};
+use api::article::{article,article_list, article_new};
+use api::user::{user_info, user_delete, user_update};
 
 fn main() {
     ::std::env::set_var("RUST_LOG", "actix_web=info");
@@ -57,6 +57,18 @@ fn main() {
                 cors::options().register(r);
                 r.method(Method::POST).h(signin);
             })
+            .resource("/api/user_info", |r| {
+                cors::options().register(r);
+                r.method(Method::GET).h(user_info);
+            })
+            .resource("/api/user_delete", |r| {
+                cors::options().register(r);
+                r.method(Method::GET).h(user_delete);
+            })
+            .resource("/api/user_update", |r| {
+                cors::options().register(r);
+                r.method(Method::POST).h(user_update);
+            })
             .resource("/api/article_list", |r| {
                 cors::options().register(r);
                 r.method(Method::GET).h(article_list);
@@ -64,10 +76,6 @@ fn main() {
             .resource("/api/article_new", |r| {
                 cors::options().register(r);
                 r.method(Method::POST).h(article_new);
-            })
-            .resource("/api/user_info", |r| {
-                cors::options().register(r);
-                r.method(Method::GET).h(user_info);
             })
             .resource("/api/{article_id}", |r| {
                 cors::options().register(r);

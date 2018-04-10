@@ -6,9 +6,10 @@ use chrono::Utc;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use utils::token;
 
-use model::user::{User, NewUser, SignupUser, SigninUser, UserInfo};
+use model::user::{User, NewUser, SignupUser, SigninUser, UserInfo, UserUpdate, UserDelete};
 use model::response::{Msgs, SigninMsgs, UserInfoMsgs};
 use model::db::ConnDsl;
+use model::response::MyError;
 
 impl Handler<SignupUser> for ConnDsl {
     type Result = Result<Msgs, Error>;
@@ -135,5 +136,44 @@ impl Handler<UserInfo> for ConnDsl {
                     })
             },
         }
+    }
+}
+
+impl Handler<UserDelete> for ConnDsl {
+    type Result = Result<Msgs, MyError>;
+
+    fn handle(&mut self, user_delete: UserDelete, _: &mut Self::Context) -> Self::Result {
+        use utils::schema::users::dsl::*;
+        let user_id: i32 = user_delete.user_id.parse().unwrap();
+        let conn = &self.0.get().unwrap();
+        let login_user = diesel::delete(users.filter(&id.eq(&user_id))).execute(conn);
+        match login_user {
+            Ok(Msgs) => Ok(Msgs{
+                                status: 200,
+                                message : "delete  loginuser success.".to_string(),
+                        }),
+            Ok(_) => Err(MyError::NotFound),
+            Err(_) => Err(MyError::DatabaseError),
+        }
+    }
+}
+
+impl Handler<UserUpdate> for ConnDsl {
+    type Result = Result<Msgs, Error>;
+
+    fn handle(&mut self, user_update: UserUpdate, _: &mut Self::Context) -> Self::Result {
+        use utils::schema::users::dsl::*;
+        let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
+        diesel::update(users)
+            .filter(&id.eq(&user_update.user_id))
+            .set((
+                username.eq(user_update.newname),
+                email.eq(user_update.newmail),
+                password.eq(user_update.newpassword),
+            )).execute(conn).map_err(error::ErrorInternalServerError)?;
+        Ok(Msgs{
+                status: 200,
+                message : "update  loginuser success.".to_string(),
+        })
     }
 }

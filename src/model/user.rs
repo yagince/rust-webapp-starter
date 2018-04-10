@@ -3,6 +3,7 @@ use actix_web::*;
 use utils::schema::users;
 use chrono::NaiveDateTime;
 use model::response::{Msgs, SigninMsgs, UserInfoMsgs};
+use model::response::MyError;
 
 #[derive(Debug,Serialize,Deserialize,PartialEq,Identifiable,Queryable)]
 pub struct User {
@@ -40,6 +41,20 @@ pub struct UserInfo {
     pub user_id: String,
 }
 
+#[derive(Deserialize,Serialize, Debug)]
+pub struct UserUpdate {
+    pub user_id: i32,
+    pub newname: String,
+    pub newmail: String,
+    pub newpassword: String,
+    pub confirm_newpassword: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserDelete {
+    pub user_id: String,
+}
+
 impl Message for SignupUser {
     type Result = Result<Msgs, Error>;
 }
@@ -50,4 +65,11 @@ impl Message for SigninUser {
 
 impl Message for UserInfo {
     type Result = Result<UserInfoMsgs, Error>;
+}
+
+impl Message for UserUpdate {
+    type Result = Result<Msgs, Error>;
+}
+impl Message for UserDelete {
+    type Result = Result<Msgs, MyError>;
 }

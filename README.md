@@ -45,6 +45,7 @@ then open broswer 'http://localhost:8000/'
 - browse pages data : get/post (done)
 - publish article (done)
 - user center : jwt (done)
+- do CRUD (done)
 
 <img alt="Home" height="500" src="https://raw.githubusercontent.com/OUISRC/Rust-webapp-starter/master/2018-04-04%2017-06-57.png">
 
