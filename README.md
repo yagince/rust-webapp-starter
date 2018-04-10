@@ -8,6 +8,12 @@ Rust single page webapp written in [actix-web](https://github.com/actix/actix-we
 ## How To
     first create a name 'webapp' postgresql database for this project.
 
+### with docker
+
+```
+docker-compose up -d
+```
+
 ## when development 
 ```bash
 $ git clone https://github.com/OUISRC/Rust-webapp-starter.git
@@ -22,7 +28,7 @@ $ cd Rust-webapp-starter/webapp
 $ npm install
 $ npm run dev
 ```
-then open broswer 'http://localhost:1234/'
+then open browser 'http://localhost:1234/'
 
 ## when production
 
