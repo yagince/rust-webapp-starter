@@ -32,6 +32,8 @@ then open browser 'http://localhost:1234/'
 
 ## when production
 
+current thereis a bug with actix-web, so before do, you should comment the 6 line(.allowed_origin("http://localhost:1234")) in 'src/utils/cors.rs' 
+
 ```bash
 $ git clone https://github.com/OUISRC/Rust-webapp-starter.git
 $ cd Rust-webapp-starter
