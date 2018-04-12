@@ -32,7 +32,7 @@ then open browser 'http://localhost:1234/'
 
 ## when production
 
-current thereis a bug with actix-web, so before do, you should comment one line(https://github.com/OUISRC/Rust-webapp-starter/blob/master/src/utils/cors.rs#L6)
+thereis a bug with actix-web, so before do, you should comment one line(https://github.com/OUISRC/Rust-webapp-starter/blob/master/src/main.rs#L51)
 
 ```bash
 $ git clone https://github.com/OUISRC/Rust-webapp-starter.git
