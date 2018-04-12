@@ -16,7 +16,7 @@ data-encoding = "2.1"
 num_cpus = "1.0"
 
 actix = "^0.5"
-actix-web = "^0.4"
+actix-web = "^0.5"
 http = "^0.1.0"
 postgres = {version= "^0.15.0", features = ["with-chrono"]}
 dotenv = "^0.10.0"

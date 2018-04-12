@@ -8,5 +8,5 @@ pub fn options() -> cors::Cors {
         .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
         .allowed_header(header::CONTENT_TYPE)
         .max_age(3600)
-        .finish().expect("Can not create CORS middleware")
+        .finish()
 }

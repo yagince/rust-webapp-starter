@@ -1,4 +1,4 @@
-use actix_web::*;
+use actix_web::{HttpMessage, HttpRequest, HttpResponse, error, Error, AsyncResponder};
 use futures::future::Future;
 use api::index::State;
 use model::user::{SignupUser, SigninUser};
@@ -16,8 +16,8 @@ pub fn signup(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Er
             .from_err()
             .and_then(|res| {
                 match res {
-                    Ok(signup_msg) => Ok(httpcodes::HTTPOk.build().json(signup_msg)?),
-                    Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
+                    Ok(signup_msg) => Ok(HttpResponse::Ok().json(signup_msg)),
+                    Err(_) => Ok(HttpResponse::InternalServerError().into())
                 }
             })
         }).responder()
@@ -34,8 +34,8 @@ pub fn signin(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Er
             .from_err()
             .and_then(|res| {
                 match res {
-                    Ok(signin_msg) => Ok(httpcodes::HTTPOk.build().json(signin_msg)?),
-                    Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
+                    Ok(signin_msg) => Ok(HttpResponse::Ok().json(signin_msg)),
+                    Err(_) => Ok(HttpResponse::InternalServerError().into())
                 }
             })
         }).responder()

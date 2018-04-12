@@ -1,4 +1,4 @@
-use actix_web::*;
+use actix_web::{HttpMessage, HttpRequest, HttpResponse, error, Error, AsyncResponder, FutureResponse};
 use futures::future::Future;
 
 use api::index::State;
@@ -13,9 +13,9 @@ pub fn article(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse, 
        .and_then(|res| {
            match res {
                Ok(article) =>
-                   Ok(httpcodes::HTTPOk.build().json(article)?),
+                   Ok(HttpResponse::Ok().json(article)),
                Err(_) =>
-                   Ok(httpcodes::HTTPInternalServerError.into()),
+                   Ok(HttpResponse::InternalServerError().into()),
            }
        }).responder())
 }
@@ -26,9 +26,9 @@ pub fn article_list(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Er
         .and_then(|res| {
             match res {
                 Ok(article_list) =>
-                    Ok(httpcodes::HTTPOk.build().json(article_list)?),
+                    Ok(HttpResponse::Ok().json(article_list)),
                 Err(_) =>
-                    Ok(httpcodes::HTTPInternalServerError.into()),
+                    Ok(HttpResponse::InternalServerError().into()),
             }
         }).responder()
 }
@@ -46,8 +46,8 @@ pub fn article_new(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Err
             .from_err()
             .and_then(|res| {
                 match res {
-                    Ok(msg) => Ok(httpcodes::HTTPOk.build().json(msg)?),
-                    Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
+                    Ok(msg) => Ok(HttpResponse::Ok().json(msg)),
+                    Err(_) => Ok(HttpResponse::InternalServerError().into())
                 }
             })
         }).responder()

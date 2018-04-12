@@ -1,4 +1,4 @@
-use actix_web::*;
+use actix_web::{HttpMessage, HttpRequest, HttpResponse, error, Error, AsyncResponder};
 use futures::future::Future;
 use utils::token::verify_token;
 
@@ -18,9 +18,9 @@ pub fn user_info(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse
                         .and_then(|res| {
                             match res {
                                 Ok(user_info) => {
-                                    Ok(httpcodes::HTTPOk.build().json(user_info)?)
+                                    Ok(HttpResponse::Ok().json(user_info))
                                 },
-                                Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
+                                Err(_) => Ok(HttpResponse::InternalServerError().into())
                             }
                         }).responder()
                     },
@@ -29,8 +29,8 @@ pub fn user_info(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse
                         .from_err()
                         .and_then(|res| {
                             match res {
-                                Ok(msg) => Ok(httpcodes::HTTPOk.build().json(msg)?),
-                                Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
+                                Ok(msg) => Ok(HttpResponse::Ok().json(msg)),
+                                Err(_) => Ok(HttpResponse::InternalServerError().into())
                             }
                         }).responder()
                     },
@@ -51,9 +51,9 @@ pub fn user_delete(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpRespon
                         .and_then(|res| {
                             match res {
                                 Ok(user_delete) => {
-                                    Ok(httpcodes::HTTPOk.build().json(user_delete)?)
+                                    Ok(HttpResponse::Ok().json(user_delete))
                                 },
-                                Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
+                                Err(_) => Ok(HttpResponse::InternalServerError().into())
                             }
                         }).responder()
                     },
@@ -62,8 +62,8 @@ pub fn user_delete(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpRespon
                         .from_err()
                         .and_then(|res| {
                              match res {
-                                Ok(msg) => Ok(httpcodes::HTTPOk.build().json(msg)?),
-                                Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
+                                Ok(msg) => Ok(HttpResponse::Ok().json(msg)),
+                                Err(_) => Ok(HttpResponse::InternalServerError().into())
                             }
                         }).responder()
                     },
@@ -86,8 +86,8 @@ pub fn user_update(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpRespon
                         .from_err()
                         .and_then(|res| {
                             match res {
-                                Ok(msg) => Ok(httpcodes::HTTPOk.build().json(msg)?),
-                                Err(_) => Ok(httpcodes::HTTPInternalServerError.into())
+                                Ok(msg) => Ok(HttpResponse::Ok().json(msg)),
+                                Err(_) => Ok(HttpResponse::InternalServerError().into())
                             }
                         })
                     }).responder();

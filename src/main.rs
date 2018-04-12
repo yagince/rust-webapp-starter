@@ -18,7 +18,7 @@ extern crate data_encoding;
 extern crate postgres;
 
 use actix::*;
-use actix_web::*;
+use actix_web::{server, App, http::Method, fs, middleware};
 use diesel::prelude::PgConnection;
 use diesel::r2d2::{ Pool, ConnectionManager };
 
@@ -44,11 +44,10 @@ fn main() {
     let manager = ConnectionManager::<PgConnection>::new(db_url);
     let conn = Pool::builder().build(manager).expect("Failed to create pool.");
     let addr = SyncArbiter::start( num_cpus::get() * 4, move || { ConnDsl(conn.clone()) });
-    HttpServer::new(
-        move || Application::with_state(State{ db: addr.clone()})
+    server::new( move || App::with_state(State{ db: addr.clone()})
             .middleware(middleware::Logger::default())
-            .resource("/", |r| r.h(home))
-            .resource("/a/{tail:.*}", |r| r.h(path))
+            .resource("/", |r| r.f(home))
+            .resource("/a/{tail:.*}", |r| r.f(path))
             .resource("/user/signup", |r| {
                 cors::options().register(r);
                 r.method(Method::POST).h(signup);
@@ -81,7 +80,7 @@ fn main() {
                 cors::options().register(r);
                 r.method(Method::GET).h(article);
             })
-            .handler("/", fs::StaticFiles::new("public", true)))
+            .handler("/", fs::StaticFiles::new("public")))
         .bind("127.0.0.1:8000").unwrap()
         .shutdown_timeout(2)
         .start();
