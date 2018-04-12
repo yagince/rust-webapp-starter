@@ -1,15 +1,14 @@
-use actix_web::{HttpMessage, HttpRequest, HttpResponse, error, Error, AsyncResponder};
+use actix_web::{HttpMessage, HttpRequest, HttpResponse, State, Json, AsyncResponder, FutureResponse};
 use futures::future::Future;
 use utils::token::verify_token;
 
 use model::user::{UserInfo, UserDelete, UserUpdate};
-use api::index::State;
+use api::index::AppState;
 
 
-pub fn user_info(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse, Error=Error>>, Error> {
-        let header_token = req.headers().get("Authorization").ok_or_else(|| error::ErrorForbidden("Authorization is required"))?;
-        let token = header_token.to_str().map_err(error::ErrorForbidden)?;
-        let fut = {
+pub fn user_info(req: HttpRequest<AppState>) -> FutureResponse<HttpResponse> {
+            let header_token = req.headers().get("Authorization").unwrap();
+            let token = header_token.to_str().unwrap();
             let user_id = token[7..].to_string();
             match verify_token(&user_id) {
                 Ok(user_id) => {
@@ -35,14 +34,11 @@ pub fn user_info(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse
                         }).responder()
                     },
             }
-        };
-        Ok(fut)
 }
 
-pub fn user_delete(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse, Error=Error>>, Error> {
-        let header_token = req.headers().get("Authorization").ok_or_else(|| error::ErrorForbidden("Authorization is required"))?;
-        let token = header_token.to_str().map_err(error::ErrorForbidden)?;
-        let fut = {
+pub fn user_delete(req: HttpRequest<AppState>) -> FutureResponse<HttpResponse> {
+            let header_token = req.headers().get("Authorization").unwrap();
+            let token = header_token.to_str().unwrap();
             let user_id = token[7..].to_string();
             match verify_token(&user_id) {
                 Ok(user_id) => {
@@ -68,28 +64,21 @@ pub fn user_delete(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpRespon
                         }).responder()
                     },
             }
-        };
-        Ok(fut)
 }
 
-pub fn user_update(req: HttpRequest<State>) -> Result<Box<Future<Item=HttpResponse, Error=Error>>, Error> {
-    let fut = req.clone().json()                     
-                .from_err()
-                .and_then(move |user_update: UserUpdate| {  
-                        req.state().db.send(UserUpdate{ 
-                            user_id: user_update.user_id,
-                            newname: user_update.newname,
-                            newmail: user_update.newmail,
-                            newpassword: user_update.newpassword,
-                            confirm_newpassword: user_update.confirm_newpassword,
-                        })         
-                        .from_err()
-                        .and_then(|res| {
-                            match res {
-                                Ok(msg) => Ok(HttpResponse::Ok().json(msg)),
-                                Err(_) => Ok(HttpResponse::InternalServerError().into())
-                            }
-                        })
-                    }).responder();
-    Ok(fut)
+pub fn user_update(user_update: Json<UserUpdate>, state: State<AppState>) -> FutureResponse<HttpResponse> {
+        state.db.send(UserUpdate{ 
+                user_id: user_update.user_id,
+                newname: user_update.newname.clone(),
+                newmail: user_update.newmail.clone(),
+                newpassword: user_update.newpassword.clone(),
+                confirm_newpassword: user_update.confirm_newpassword.clone(),
+            })         
+            .from_err()
+            .and_then(|res| {
+                    match res {
+                        Ok(msg) => Ok(HttpResponse::Ok().json(msg)),
+                        Err(_) => Ok(HttpResponse::InternalServerError().into())
+                    }
+            }).responder()
 }

@@ -1,42 +1,34 @@
-use actix_web::{HttpMessage, HttpRequest, HttpResponse, error, Error, AsyncResponder};
+use actix_web::{HttpMessage, HttpRequest, HttpResponse, State, Json, AsyncResponder, FutureResponse};
 use futures::future::Future;
-use api::index::State;
+use api::index::AppState;
 use model::user::{SignupUser, SigninUser};
 
-pub fn signup(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Error>> {
-    req.clone().json()                     
-       .from_err()
-       .and_then(move |signup_user: SignupUser| {  
-            req.state().db.send(SignupUser{ 
-                username: signup_user.username,
-                email: signup_user.email,
-                password: signup_user.password,
-                confirm_password: signup_user.confirm_password,
-            })         
-            .from_err()
-            .and_then(|res| {
-                match res {
-                    Ok(signup_msg) => Ok(HttpResponse::Ok().json(signup_msg)),
-                    Err(_) => Ok(HttpResponse::InternalServerError().into())
-                }
-            })
+pub fn signup(signup_user: Json<SignupUser>, state: State<AppState>) -> FutureResponse<HttpResponse> {
+    state.db.send(SignupUser{ 
+            username: signup_user.username.clone(),
+            email: signup_user.email.clone(),
+            password: signup_user.password.clone(),
+            confirm_password: signup_user.confirm_password.clone(),
+        })         
+        .from_err()
+        .and_then(|res| {
+            match res {
+                Ok(signup_msg) => Ok(HttpResponse::Ok().json(signup_msg)),
+                Err(_) => Ok(HttpResponse::InternalServerError().into())
+            }
         }).responder()
 }
 
-pub fn signin(req: HttpRequest<State>) -> Box<Future<Item=HttpResponse, Error=Error>> {
-    req.clone().json()                   
-       .from_err()
-       .and_then(move |signin_user: SigninUser| {  
-            req.state().db.send(SigninUser{ 
-                username: signin_user.username,
-                password: signin_user.password,
-            })         
-            .from_err()
-            .and_then(|res| {
-                match res {
-                    Ok(signin_msg) => Ok(HttpResponse::Ok().json(signin_msg)),
-                    Err(_) => Ok(HttpResponse::InternalServerError().into())
-                }
-            })
+pub fn signin(signin_user: Json<SigninUser>, state: State<AppState>) -> FutureResponse<HttpResponse> {
+    state.db.send(SigninUser{ 
+            username: signin_user.username.clone(),
+            password: signin_user.password.clone(),
+        })         
+        .from_err()
+        .and_then(|res| {
+            match res {
+                Ok(signin_msg) => Ok(HttpResponse::Ok().json(signin_msg)),
+                Err(_) => Ok(HttpResponse::InternalServerError().into())
+            }
         }).responder()
 }

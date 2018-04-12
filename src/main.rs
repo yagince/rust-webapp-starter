@@ -28,7 +28,7 @@ mod model;
 mod utils;
 
 use model::db::ConnDsl;
-use api::index::{State, home, path};
+use api::index::{AppState, home, path};
 use api::auth::{signup, signin};
 use api::article::{article,article_list, article_new};
 use api::user::{user_info, user_delete, user_update};
@@ -43,23 +43,23 @@ fn main() {
     let manager = ConnectionManager::<PgConnection>::new(db_url);
     let conn = Pool::builder().build(manager).expect("Failed to create pool.");
     let addr = SyncArbiter::start( num_cpus::get() * 4, move || { ConnDsl(conn.clone()) });
-    server::new( move || App::with_state(State{ db: addr.clone()})
+    server::new( move || App::with_state(AppState{ db: addr.clone()})
             .middleware(middleware::Logger::default())
-            .resource("/", |r| r.f(home))
-            .resource("/a/{tail:.*}", |r| r.f(path))
+            .resource("/", |r| r.h(home))
+            .resource("/a/{tail:.*}", |r| r.h(path))
             .configure(|app| Cors::for_app(app)
             .allowed_origin("http://localhost:1234")
             .allowed_methods(vec!["GET", "POST"])
             .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             .allowed_header(header::CONTENT_TYPE)
             .max_age(3600)
-            .resource("/user/signup", |r| { r.method(Method::POST).h(signup); })
-            .resource("/user/signin", |r| { r.method(Method::POST).h(signin); })
+            .resource("/user/signup", |r| { r.method(Method::POST).with2(signup); })
+            .resource("/user/signin", |r| { r.method(Method::POST).with2(signin); })
             .resource("/api/user_info", |r| { r.method(Method::GET).h(user_info); })
             .resource("/api/user_delete", |r| { r.method(Method::GET).h(user_delete); })
-            .resource("/api/user_update", |r| { r.method(Method::POST).h(user_update); })
+            .resource("/api/user_update", |r| { r.method(Method::POST).with2(user_update); })
             .resource("/api/article_list", |r| { r.method(Method::GET).h(article_list); })
-            .resource("/api/article_new", |r| { r.method(Method::POST).h(article_new); })
+            .resource("/api/article_new", |r| { r.method(Method::POST).with2(article_new); })
             .resource("/api/{article_id}", |r| { r.method(Method::GET).h(article); })
             .register())
             .handler("/", fs::StaticFiles::new("public")))
