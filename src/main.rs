@@ -18,7 +18,7 @@ extern crate data_encoding;
 extern crate postgres;
 
 use actix::*;
-use actix_web::{server, App, http::Method, fs, middleware};
+use actix_web::{server, App, http::{header, Method}, fs, middleware, middleware::cors::Cors};
 use diesel::prelude::PgConnection;
 use diesel::r2d2::{ Pool, ConnectionManager };
 
@@ -28,7 +28,6 @@ mod model;
 mod utils;
 
 use model::db::ConnDsl;
-use utils::cors;
 use api::index::{State, home, path};
 use api::auth::{signup, signin};
 use api::article::{article,article_list, article_new};
@@ -48,42 +47,25 @@ fn main() {
             .middleware(middleware::Logger::default())
             .resource("/", |r| r.f(home))
             .resource("/a/{tail:.*}", |r| r.f(path))
-            .resource("/user/signup", |r| {
-                cors::options().register(r);
-                r.method(Method::POST).h(signup);
-            })
-            .resource("/user/signin", |r| {
-                cors::options().register(r);
-                r.method(Method::POST).h(signin);
-            })
-            .resource("/api/user_info", |r| {
-                cors::options().register(r);
-                r.method(Method::GET).h(user_info);
-            })
-            .resource("/api/user_delete", |r| {
-                cors::options().register(r);
-                r.method(Method::GET).h(user_delete);
-            })
-            .resource("/api/user_update", |r| {
-                cors::options().register(r);
-                r.method(Method::POST).h(user_update);
-            })
-            .resource("/api/article_list", |r| {
-                cors::options().register(r);
-                r.method(Method::GET).h(article_list);
-            })
-            .resource("/api/article_new", |r| {
-                cors::options().register(r);
-                r.method(Method::POST).h(article_new);
-            })
-            .resource("/api/{article_id}", |r| {
-                cors::options().register(r);
-                r.method(Method::GET).h(article);
-            })
+            .configure(|app| Cors::for_app(app)
+            .allowed_origin("http://localhost:1234")
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+            .allowed_header(header::CONTENT_TYPE)
+            .max_age(3600)
+            .resource("/user/signup", |r| { r.method(Method::POST).h(signup); })
+            .resource("/user/signin", |r| { r.method(Method::POST).h(signin); })
+            .resource("/api/user_info", |r| { r.method(Method::GET).h(user_info); })
+            .resource("/api/user_delete", |r| { r.method(Method::GET).h(user_delete); })
+            .resource("/api/user_update", |r| { r.method(Method::POST).h(user_update); })
+            .resource("/api/article_list", |r| { r.method(Method::GET).h(article_list); })
+            .resource("/api/article_new", |r| { r.method(Method::POST).h(article_new); })
+            .resource("/api/{article_id}", |r| { r.method(Method::GET).h(article); })
+            .register())
             .handler("/", fs::StaticFiles::new("public")))
         .bind("127.0.0.1:8000").unwrap()
         .shutdown_timeout(2)
         .start();
 
-    let _ = sys.run();
+    sys.run();
 }
