@@ -48,7 +48,7 @@ fn main() {
             .resource("/", |r| r.h(home))
             .resource("/a/{tail:.*}", |r| r.h(path))
             .configure(|app| Cors::for_app(app)
-            .allowed_origin("http://localhost:1234")
+            // .allowed_origin("http://localhost:1234")    // let CORS default to all
             .allowed_methods(vec!["GET", "POST"])
             .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             .allowed_header(header::CONTENT_TYPE)
