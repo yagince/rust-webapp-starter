@@ -1,5 +1,5 @@
 # Rust-webapp-starter
-> The Extend project **muro[](https://github.com/OUISRC/muro)**
+> The Extend project **[muro](https://github.com/OUISRC/muro)**
 
 Rust single page webapp written in [actix-web](https://github.com/actix/actix-web) with vuejs.
 - Async stable Actix-web framework 
