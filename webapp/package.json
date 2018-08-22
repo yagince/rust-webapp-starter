@@ -1,23 +1,37 @@
 {
   "name": "webapp",
-  "version": "1.0.0",
-  "description": "webapp",
-  "main": "main.js",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "dev": "rm -rf dist/ && NODE_ENV=development parcel index.html",
-    "build": "NODE_ENV=production parcel build index.html --out-dir ../public",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
   },
-  "license": "ISC",
   "dependencies": {
-    "vue": "^2.5.13",
+    "axios": "^0.17.1",
+    "register-service-worker": "^1.0.0",
+    "vue": "^2.5.17",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1",
-    "axios": "^0.17.1"
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "babel-preset-env": "^1.6.1",
-    "parcel-bundler": "^1.4.1",
-    "parcel-plugin-vue": "^1.5.0"
-  }
+    "@vue/cli-plugin-babel": "^3.0.0",
+    "@vue/cli-plugin-pwa": "^3.0.0",
+    "@vue/cli-service": "^3.0.0",
+    "vue-template-compiler": "^2.5.17"
+  },
+  "babel": {
+    "presets": [
+      "@vue/app"
+    ]
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }

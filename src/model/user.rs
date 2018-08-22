@@ -1,7 +1,6 @@
-use actix::*;
-use actix_web::*;
-use utils::schema::users;
-use chrono::NaiveDateTime;
+use actix_web::{Error,actix::Message};
+use share::schema::users;
+use chrono::{Utc, NaiveDateTime};
 use model::response::{Msgs, SigninMsgs, UserInfoMsgs};
 use model::response::MyError;
 
@@ -72,4 +71,16 @@ impl Message for UserUpdate {
 }
 impl Message for UserDelete {
     type Result = Result<Msgs, MyError>;
+}
+
+impl User {
+    pub fn new() -> User {
+        User {
+            id: 0,
+            email: "".to_string(),
+            username: "".to_string(),
+            password: "".to_string(),
+            created_at: Utc::now().naive_utc(),
+        }
+    }
 }

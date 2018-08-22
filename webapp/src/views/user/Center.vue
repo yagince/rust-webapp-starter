@@ -1,17 +1,18 @@
 <template>
     <div id="center">
       <mnav id="mnav"></mnav>
+      <div id="top"></div>
       <div id="content">
-        <div id="user-center"><p>Uaer Center</p></div>
-        <p><strong>Welcome to the user center. You must first login to see user info!</strong></p>
+        <h2><p>Uaer Center</p></h2>
+        <p><strong style="color: green;">Welcome to the user center. You must first login to see user info!</strong></p>
         <p>email : {{ email }}</p>
         <p>username ：{{ username }}</p>
         <p>created_time : {{ created_time }}</p>
         <button id="submit" v-if="username == ''" @click="login">Login</button><br/>
-        <button id="submit" v-if="username != ''" @click="update">Update My-Account</button><br/>
-        <button id="submit" v-if="username != ''" @click="deleteme">Delete My-Account</button><br/>
-
-        <div id="update" v-if="userupdate == true">
+        <button id="submit" v-if="username != ''" @click="update">UpdateAccount</button><br/>
+        <button id="submit" v-if="username != ''" @click="deleteme">DeleteAccount</button><br/>
+      </div>
+      <div id="update" v-if="userupdate == true">
             <p>Account Update</p> 
               <input type="text" name="newname" placeholder="Newname" v-model="Newname"  required /><br/>
               <input type="text" name="newmail" placeholder="Newmail" v-model="Newmail"  required /><br/>
@@ -19,13 +20,13 @@
               <input type="password" name="confirm_newpassword" placeholder="Confirm Newpassword" v-model="ConfirmNewpassword"  required/><br/>
               <button id="submit" @click="submitnow">UpdateNow</button>
             
-        </div>
       </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import URLprefix from '../../config'
 import auth from '../../utils/auth'
 import Mnav from '../../components/nav/Mnav'
 export default {
@@ -47,7 +48,7 @@ export default {
   },
   mounted: function() {
       if (sessionStorage.getItem('token')){
-        axios.get('http://localhost:8000/api/user_info', auth.getAuthHeader())
+        axios.get(URLprefix + 'api/user_info', auth.getAuthHeader())
         .then((response) => {
             this.email =  response.data.current_user.email
             this.username =  response.data.current_user.username
@@ -74,7 +75,7 @@ export default {
         var newmail = this.Newmail
         var newpassword = this.Newpassword
         var confirm_newpassword = this.ConfirmNewpassword
-        axios.post('http://localhost:8000/api/user_update', {
+        axios.post(URLprefix + 'api/user_update', {
             user_id: user_id,
             newname: newname,
             newmail: newmail,
@@ -90,7 +91,7 @@ export default {
         })
     },
     deleteme() {
-        axios.get('http://localhost:8000/api/user_delete', auth.getAuthHeader())
+        axios.get(URLprefix + 'api/user_delete', auth.getAuthHeader())
         .then((response) => {
             sessionStorage.removeItem('token')
             sessionStorage.removeItem('signin_user')
@@ -107,27 +108,47 @@ export default {
 </script>
 
 <style scoped>
+#center {
+  line-height: 1.5rem;
+}
+#content {
+  border: 1px solid green;
+  padding: 2rem;
+}
+button {
+    width: 7rem; 
+    line-height:25px;
+    background-color:#ffffff;
+    border :1px solid #a39c9c;
+}
 @media only screen and (max-width: 600px) {
-    #content  {
+    #content {
       margin: 0.5rem auto;
       width: 95%;
-  }
+    }
 }
 @media only screen and (min-width: 600px) and (max-width: 1000px) {
-    #content  {
-      margin: 0 auto;
-      width: 72%;
-      padding-top: 77px;
-  }
+    #top  {
+        padding-top: 77px;
+    } 
+    #content,#update {
+        margin: 0 auto;
+        width: 72%;
+    }
+    #update {
+      padding: 1rem 2rem;
+    }
 }
 @media only screen and (min-width: 1000px) {
-  #content  {
-      margin: 0 auto;
-      width: 66%;
-      padding-top: 77px;
-  }
-  #update {
-    margin: 3rem auto;
-  }
+    #top  {
+        padding-top: 77px;
+    } 
+    #content,#update {
+        margin: 0 auto;
+        width: 66%;
+    }
+    #update {
+      padding: 1rem 2rem;
+    }
 }
 </style>

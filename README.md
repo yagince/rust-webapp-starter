@@ -5,7 +5,7 @@ Rust single page webapp written in [actix-web](https://github.com/actix/actix-we
 - Async stable Actix-web framework 
 - diesel, postgresql r2d2
 - SPA CORS JWT
-- Vuejs Parcel-bundler
+- Vuejs
 
 ## How To
     first create a name 'webapp' postgresql database for this project.
@@ -24,13 +24,13 @@ $ cargo install diesel_cli --no-default-features --features postgres
 $ diesel setup
 $ cargo run
 
-// another shell  nodejs(v8.9.4 on my machine)
+// another shell  nodejs(v10.7 on my machine)
 
 $ cd Rust-webapp-starter/webapp
 $ npm install
-$ npm run dev
+$ npm run serve
 ```
-then open browser 'http://localhost:1234/'
+then open browser 'http://localhost:8080/'
 
 ## when production
 
@@ -55,7 +55,7 @@ then open broswer 'http://localhost:8000/'
 - user center : jwt (done)
 - do CRUD (done)
 
-<img alt="Home" height="500" src="https://raw.githubusercontent.com/OUISRC/Rust-webapp-starter/master/2018-04-04%2017-06-57.png">
+<img alt="Home" height="500" src="https://raw.githubusercontent.com/OUISRC/Rust-webapp-starter/master/001.png">
 
 ### Contribute
  

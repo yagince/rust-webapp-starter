@@ -1,7 +1,7 @@
 use actix_web::{HttpMessage, HttpRequest, HttpResponse, State, Json, AsyncResponder, FutureResponse};
 use futures::future::Future;
 
-use api::index::AppState;
+use share::state::AppState;
 use model::article::{ArticleList, ArticleId, ArticleNew};
 
 
@@ -33,7 +33,7 @@ pub fn article_list(req: HttpRequest<AppState>) -> FutureResponse<HttpResponse> 
         }).responder()
 }
 
-pub fn article_new(article_new: Json<ArticleNew>, state: State<AppState>) -> FutureResponse<HttpResponse> {
+pub fn article_new((article_new, state): (Json<ArticleNew>, State<AppState>)) -> FutureResponse<HttpResponse> {
     state.db.send(ArticleNew{ 
             user_id: article_new.user_id.clone(),
             category: article_new.category.clone(),

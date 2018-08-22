@@ -3,10 +3,10 @@
         <mnav id="mnav"></mnav>
                     <div id="content">
                         <div id="title">
-                            <h3> title : {{ article.title }} </h3> 
-                            <span id="info">category : {{ article.category }}</span>  
-                            <span id="info"><a :href="'/a/user/' + article.user_id">user_id : {{ article.user_id }}</a></span>  
-                            <span id="info">created_at : {{ article.created_at }}</span>  
+                            <h2> {{ article.title }} </h2> 
+                            <span id="info">{{ article.category }}</span> • 
+                            <span id="info"><a :href="'/a/user/' + article.user_id">user_id : {{ article.user_id }}</a></span> •   
+                            <span id="info">{{ article.created_at }}</span>  
                         </div>
                         <div id="body">content : {{ article.body }}</div>
                     </div>
@@ -15,6 +15,7 @@
 
 <script>
 import axios from 'axios'
+import URLprefix from '../../config'
 import Mnav from '../../components/nav/Mnav'
 export default {
     name: 'article_id',
@@ -29,7 +30,7 @@ export default {
     mounted: function() {
     // let article_id = this.$route.params.id
     // console.log(article_id)
-    axios.get("http://localhost:8000/api/" + this.$route.params.id)
+    axios.get(URLprefix + 'api/article/' + this.$route.params.id)
       .then((response) => {
         this.article = response.data.article
         console.log(response.data.article)
@@ -42,11 +43,28 @@ export default {
 </script>
 
 <style scoped>
-#body {
-    margin: 2rem auto;
+#article_id {
+    line-height: 1.5rem;
+    background-color: #ffffff;
 }
 a {
     color: #0541af;
+}
+#content #title {
+    margin-top: 2px;
+    border-bottom: 1px solid rgb(223, 223, 223);
+}
+#title h2 { 
+    padding-bottom: 0.3rem;
+}
+#title #info {
+    display: inline-block;
+    font-size: 14px;
+}
+#body {
+    margin: 1rem auto;
+    word-break: break-all;
+    word-wrap: break-word;
 }
 @media only screen and (max-width: 600px) {
     #content  {

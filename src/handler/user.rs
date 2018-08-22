@@ -1,7 +1,5 @@
-use diesel;
-use diesel::prelude::*;
-use actix::*;
-use actix_web::*;
+use diesel::{self,sql_query,RunQueryDsl,QueryDsl,ExpressionMethods};
+use actix_web::{actix::Handler, error,Error};
 use chrono::Utc;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use utils::token;
@@ -16,7 +14,7 @@ impl Handler<SignupUser> for ConnDsl {
 
     fn handle(&mut self, signup_user: SignupUser, _: &mut Self::Context) -> Self::Result {
         if &signup_user.password == &signup_user.confirm_password {
-                use utils::schema::users::dsl::*;
+                use share::schema::users::dsl::*;
                 let hash_password = match hash(&signup_user.password, DEFAULT_COST) {
                     Ok(h) => h,
                     Err(_) => panic!()
@@ -46,16 +44,10 @@ impl Handler<SigninUser> for ConnDsl {
     type Result = Result<SigninMsgs, Error>;
 
     fn handle(&mut self, signin_user: SigninUser, _: &mut Self::Context) -> Self::Result {
-        use utils::schema::users::dsl::*;
+        use share::schema::users::dsl::*;
         let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
         let login_user =  users.filter(&username.eq(&signin_user.username)).load::<User>(conn).map_err(error::ErrorInternalServerError)?.pop();
-        let no_user = User {
-            id: 0,
-            email: "".to_owned(),
-            username: "".to_owned(),
-            password: "".to_owned(),
-            created_at: Utc::now().naive_utc(),
-        };
+        let no_user = User::new();
         match login_user {
             Some(login_user) => {
                 match verify(&signin_user.password, &login_user.password) {
@@ -102,7 +94,7 @@ impl Handler<UserInfo> for ConnDsl {
     type Result = Result<UserInfoMsgs, Error>;
 
     fn handle(&mut self, user_info: UserInfo, _: &mut Self::Context) -> Self::Result {
-        use utils::schema::users::dsl::*;
+        use share::schema::users::dsl::*;
         let user_id: i32 = user_info.user_id.parse().map_err(error::ErrorBadRequest)?;
         let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
         let login_user =  users.filter(&id.eq(&user_id)).load::<User>(conn).map_err(error::ErrorInternalServerError)?.pop();
@@ -122,13 +114,7 @@ impl Handler<UserInfo> for ConnDsl {
                     })
             },
             None => {
-                    let no_user = User {
-                            id: 0,
-                            email: "".to_owned(),
-                            username: "".to_owned(),
-                            password: "".to_owned(),
-                            created_at: Utc::now().naive_utc(),
-                    };
+                    let no_user = User::new();
                     Ok(UserInfoMsgs { 
                             status: 400,
                             message : "error.".to_string(),
@@ -143,7 +129,7 @@ impl Handler<UserDelete> for ConnDsl {
     type Result = Result<Msgs, MyError>;
 
     fn handle(&mut self, user_delete: UserDelete, _: &mut Self::Context) -> Self::Result {
-        use utils::schema::users::dsl::*;
+        use share::schema::users::dsl::*;
         let user_id: i32 = user_delete.user_id.parse().unwrap();
         let conn = &self.0.get().unwrap();
         let login_user = diesel::delete(users.filter(&id.eq(&user_id))).execute(conn);
@@ -162,7 +148,7 @@ impl Handler<UserUpdate> for ConnDsl {
     type Result = Result<Msgs, Error>;
 
     fn handle(&mut self, user_update: UserUpdate, _: &mut Self::Context) -> Self::Result {
-        use utils::schema::users::dsl::*;
+        use share::schema::users::dsl::*;
         let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
         diesel::update(users)
             .filter(&id.eq(&user_update.user_id))

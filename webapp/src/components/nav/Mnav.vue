@@ -2,12 +2,11 @@
   <div id="mnav">
       <header>
         <div id="line"></div>
-        <h1><router-link to="/">Rust</router-link></h1>
+        <h1><router-link to="/">Wapp</router-link></h1>
         <label ><router-link to="#" id="menu">Menu</router-link></label>
       </header>
       <div id="lnav">
           <li> <router-link to="/a/wiki" title="wiki">wiki</router-link></li>
-          <li> <router-link to="/a/more" title="more">more</router-link></li>
       </div>
       <div id="rnav">
           <li v-if="username"> 
@@ -105,7 +104,7 @@ header label {
   #lnav li a {
     font-size: 20px;
     font-weight: bold;
-    padding-right: 2vw;
+    padding-right: 3vw;
   }
   #rnav {
     position: fixed;
@@ -143,7 +142,7 @@ header label {
   #lnav li a {
     font-size: 20px;
     font-weight: bold;
-    padding-right: 2vw;
+    padding-right: 3vw;
   }
   #rnav {
     position: fixed;

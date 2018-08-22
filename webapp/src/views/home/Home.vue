@@ -29,7 +29,8 @@
                           <span id="right">
                               <span id="info"> {{ article.category }} </span>
                               <span id="info"><a :href="'/a/user/' + article.user_id"> {{ article.user_id }} </a></span>
-                              <span id="info"> {{ article.id }} </span>
+                              <span id="info"> • </span>
+                              <span id="info"> • </span>
                               <span > {{ article.created_at }} </span>
                           </span>                        
                       </div>
@@ -40,7 +41,8 @@
                         <span id="right">
                             <span id="info"> {{ article.category }} </span>
                             <span id="info"><a :href="'/a/user/' + article.user_id"> {{ article.user_id }} </a></span>
-                            <span id="info"> {{ article.id }} </span>
+                            <span id="info"> • </span>
+                            <span id="info"> • </span>
                             <span > {{ article.created_at }} </span>
                         </span>
                       </div>
@@ -53,6 +55,7 @@
 
 <script>
 import axios from 'axios'
+import URLprefix from '../../config'
 import auth from '../../utils/auth'
 import Mnav from '../../components/nav/Mnav'
 export default {
@@ -66,7 +69,7 @@ export default {
     }
   },
   mounted: function() {
-    axios.get('http://localhost:8000/api/article_list', auth.getAuthHeader())
+    axios.get(URLprefix + 'api/article_list', auth.getAuthHeader())
       .then((response) => {
         this.article_list = response.data.article_list.reverse()
         console.log(response.data.article_list)

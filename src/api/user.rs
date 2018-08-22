@@ -1,9 +1,9 @@
 use actix_web::{HttpMessage, HttpRequest, HttpResponse, State, Json, AsyncResponder, FutureResponse};
-use futures::future::Future;
+use futures::Future;
 use utils::token::verify_token;
 
 use model::user::{UserInfo, UserDelete, UserUpdate};
-use api::index::AppState;
+use share::state::AppState;
 
 
 pub fn user_info(req: HttpRequest<AppState>) -> FutureResponse<HttpResponse> {
@@ -66,7 +66,7 @@ pub fn user_delete(req: HttpRequest<AppState>) -> FutureResponse<HttpResponse> {
             }
 }
 
-pub fn user_update(user_update: Json<UserUpdate>, state: State<AppState>) -> FutureResponse<HttpResponse> {
+pub fn user_update((user_update, state): (Json<UserUpdate>, State<AppState>)) -> FutureResponse<HttpResponse> {
         state.db.send(UserUpdate{ 
                 user_id: user_update.user_id,
                 newname: user_update.newname.clone(),

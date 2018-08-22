@@ -26,6 +26,7 @@
 
 <script>
 import axios from 'axios'
+import URLprefix from '../../config'
 import Mnav from '../../components/nav/Mnav'
 export default {
   name: 'access',
@@ -43,7 +44,7 @@ export default {
       var username = this.Username
       var password = this.Password
 
-      axios.post('http://localhost:8000/user/signin', {
+      axios.post(URLprefix + 'api/signin', {
           username: username,
           password: password
       })

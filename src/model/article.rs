@@ -1,7 +1,6 @@
-use actix::*;
-use actix_web::*;
-use utils::schema::article;
-use chrono::NaiveDateTime;
+use actix_web::{Error,actix::Message};
+use share::schema::article;
+use chrono::{Utc, NaiveDateTime};
 use model::response::{ArticleListMsgs, ArticleMsgs, Msgs};
 
 #[derive(Clone,Debug,Serialize,Deserialize,PartialEq,Queryable)]
@@ -49,4 +48,17 @@ impl Message for ArticleId {
 
 impl Message for ArticleNew {
     type Result = Result<Msgs, Error>;
+}
+
+impl Article {
+    pub fn new() -> Article {
+        Article {
+            id: 0,
+            user_id: 0,
+            category: "".to_string(),
+            title: "".to_string(),
+            body: "".to_string(),
+            created_at: Utc::now().naive_utc(),
+        }
+    }
 }

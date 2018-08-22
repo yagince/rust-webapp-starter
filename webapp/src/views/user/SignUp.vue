@@ -24,6 +24,7 @@
 
 <script>
 import axios from 'axios'
+import URLprefix from '../../config'
 import Mnav from '../../components/nav/Mnav'
 export default {
   name: 'access',
@@ -44,7 +45,7 @@ export default {
       var email = this.Email
       var password = this.Password
       var confirm_password = this.ConfirmPassword
-      axios.post('http://localhost:8000/user/signup', {
+      axios.post(URLprefix + 'api/signup', {
           username: username,
           email: email,
           password: password,

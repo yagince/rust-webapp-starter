@@ -1,35 +1,19 @@
-use actix::*;
+use actix_web::actix::{Addr,SyncArbiter,Actor,SyncContext};
 use diesel::prelude::PgConnection;
 use diesel::r2d2::{ Pool, ConnectionManager };
-// use dotenv;
+use dotenv;
+use num_cpus;
 
-// actix-web DbExecutor
-
-//  pub struct DbExecutor(pub PgConnection);
-
-//  impl Actor for DbExecutor {
-//      type Context = SyncContext<Self>;
-//  }
- 
-//  impl DbExecutor {
-//      pub fn new() -> DbExecutor {
-//         let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
-//          DbExecutor(PgConnection::establish(&db_url).expect(&format!("Error connecting to {}", db_url)))
-//      }
-//  }
-
-//  r2d2_diesel
 pub struct ConnDsl(pub Pool<ConnectionManager<PgConnection>>);
 
 impl Actor for ConnDsl {
     type Context = SyncContext<Self>;
 }
 
-// impl ConnDsl {
-//     pub fn new() -> ConnDsl {
-//         let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
-//         let manager = ConnectionManager::<PgConnection>::new(db_url);
-//         let conn = Pool::builder().build(manager).expect("Failed to create pool.");
-//         ConnDsl(conn)
-//     }
-// }
+pub fn init() -> Addr<ConnDsl> {
+    let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let manager = ConnectionManager::<PgConnection>::new(db_url);
+    let conn = Pool::builder().build(manager).expect("Failed to create pool.");
+    SyncArbiter::start( num_cpus::get() * 4, move || { ConnDsl(conn.clone()) })
+}
+

@@ -1,4 +1,4 @@
 pub mod article;
 pub mod user;
-pub mod index;
+pub mod home;
 pub mod auth;
