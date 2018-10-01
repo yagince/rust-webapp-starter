@@ -2,11 +2,12 @@ use diesel::{self,sql_query,RunQueryDsl,QueryDsl,ExpressionMethods};
 use actix_web::{actix::Handler, error,Error};
 use chrono::Utc;
 use bcrypt::{DEFAULT_COST, hash, verify};
-use utils::token;
+use jwt::{encode, Header, Algorithm};
 
 use model::user::{User, NewUser, SignupUser, SigninUser, UserInfo, UserUpdate, UserDelete};
 use model::response::{Msgs, SigninMsgs, UserInfoMsgs};
 use model::db::ConnDsl;
+use share::common::Claims;
 use model::response::MyError;
 
 impl Handler<SignupUser> for ConnDsl {
@@ -52,8 +53,14 @@ impl Handler<SigninUser> for ConnDsl {
             Some(login_user) => {
                 match verify(&signin_user.password, &login_user.password) {
                     Ok(valid) => {
-                        let user_id = login_user.id.to_string();
-                        let token = token::generate_token(user_id).unwrap();
+                        let key = "secret";
+                        let claims = Claims {
+                            user_id: login_user.id.to_string(),
+                        };
+                        let token = match encode(&Header::default(), &claims, key.as_ref()) {
+                            Ok(t) => t,
+                            Err(_) => panic!() // in practice you would return the error
+                        };
                         let the_user = User {
                             id: login_user.id,
                             email: login_user.email.clone(),
@@ -130,6 +137,7 @@ impl Handler<UserDelete> for ConnDsl {
 
     fn handle(&mut self, user_delete: UserDelete, _: &mut Self::Context) -> Self::Result {
         use share::schema::users::dsl::*;
+        println!("============{:?}============", user_delete.user_id);
         let user_id: i32 = user_delete.user_id.parse().unwrap();
         let conn = &self.0.get().unwrap();
         let login_user = diesel::delete(users.filter(&id.eq(&user_id))).execute(conn);
@@ -150,12 +158,16 @@ impl Handler<UserUpdate> for ConnDsl {
     fn handle(&mut self, user_update: UserUpdate, _: &mut Self::Context) -> Self::Result {
         use share::schema::users::dsl::*;
         let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
+        let hash_password = match hash(&user_update.newpassword, DEFAULT_COST) {
+                    Ok(h) => h,
+                    Err(_) => panic!()
+                };
         diesel::update(users)
             .filter(&id.eq(&user_update.user_id))
             .set((
                 username.eq(user_update.newname),
                 email.eq(user_update.newmail),
-                password.eq(user_update.newpassword),
+                password.eq(hash_password),
             )).execute(conn).map_err(error::ErrorInternalServerError)?;
         Ok(Msgs{
                 status: 200,

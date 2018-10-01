@@ -1,6 +1,6 @@
 # Rust-webapp-starter [![Build Status](https://travis-ci.org/OUISRC/Rust-webapp-starter.svg?branch=master)](https://travis-ci.org/OUISRC/Rust-webapp-starter)
 
-> The Extend project **[muro](https://github.com/OUISRC/muro)**
+> The Extend project **[ruster](https://github.com/rustlang-cn/ruster)**
 
 Rust single page webapp written in [actix-web](https://github.com/actix/actix-web) with vuejs.
 

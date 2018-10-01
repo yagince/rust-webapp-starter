@@ -12,9 +12,8 @@ extern crate dotenv;
 extern crate chrono;
 extern crate bcrypt;
 extern crate http;
-extern crate ring;
-extern crate data_encoding;
 extern crate postgres;
+extern crate jsonwebtoken as jwt;
 
 use actix_web::{actix::System,server};
 
@@ -22,7 +21,6 @@ mod api;
 mod handler;
 mod model;
 mod share;
-mod utils;
 mod router;
 
 fn main() {
