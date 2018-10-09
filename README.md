@@ -62,7 +62,7 @@ then open broswer 'http://localhost:8000/'
 * user center : jwt (done)
 * do CRUD (done)
 
-<img alt="Home" height="500" src="https://raw.githubusercontent.com/OUISRC/Rust-webapp-starter/master/001.png">
+<img alt="Home" height="500" src="https://raw.githubusercontent.com/rustlang-cn/Rust-webapp-starter/master/001.png">
 
 ### Contribute
  
