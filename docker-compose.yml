@@ -1,10 +1,9 @@
 version: '3.1'
 
 services:
-
   postgres:
     container_name: postgres
-    image: postgres
+    image: postgres:11
     restart: always
     environment:
       POSTGRES_DB: webapp
@@ -12,3 +11,14 @@ services:
       POSTGRES_PASSWORD: password
     ports:
      - "5432:5432"
+  web:
+    container_name: web
+    build:
+      context: .
+    command: cargo run
+    volumes:
+      - .:/app
+      - ./tmp/.cargo/registry:/root/.cargo/registry
+      - ./tmp/.cache:/root/.cache
+    depends_on:
+      - postgres
