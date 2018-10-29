@@ -34,7 +34,7 @@ fn main() {
             router::app_state().boxed(),
             router::app().boxed(),
         ])
-        .bind("localhost:8000").unwrap()
+        .bind("0.0.0.0:8000").unwrap()
         .shutdown_timeout(2)
         .start();
 
