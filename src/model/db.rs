@@ -13,7 +13,6 @@ impl Actor for ConnDsl {
 pub fn init() -> Addr<ConnDsl> {
     let db_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let manager = ConnectionManager::<PgConnection>::new(db_url);
-    let conn = Pool::builder().build(manager).expect("Failed to create pool.");
-    SyncArbiter::start( num_cpus::get() * 4, move || { ConnDsl(conn.clone()) })
+    let conn = Pool::builder().max_size(5).build(manager).expect("Failed to create pool.");
+    SyncArbiter::start( num_cpus::get(), move || { ConnDsl(conn.clone()) })
 }
-
