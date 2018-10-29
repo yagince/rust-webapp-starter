@@ -11,8 +11,8 @@ services:
       POSTGRES_PASSWORD: password
     ports:
      - "5432:5432"
-  web:
-    container_name: web
+  api:
+    container_name: api
     build:
       context: .
     command: cargo run
@@ -22,3 +22,17 @@ services:
       - ./tmp/.cache:/root/.cache
     depends_on:
       - postgres
+    ports:
+     - "18000:8000"
+  web:
+    container_name: web
+    build:
+      context: .
+    working_dir: '/app/webapp'
+    command: yarn run serve
+    ports:
+     - "18080:8080"
+    volumes:
+      - .:/app
+    depends_on:
+      - api
