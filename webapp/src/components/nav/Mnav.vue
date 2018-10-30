@@ -2,14 +2,14 @@
   <div id="mnav">
       <header>
         <div id="line"></div>
-        <h1><router-link to="/">Wapp</router-link></h1>
+        <h1><router-link to="/">app</router-link></h1>
         <label ><router-link to="#" id="menu">Menu</router-link></label>
       </header>
       <div id="lnav">
           <li> <router-link to="/a/wiki" title="wiki">wiki</router-link></li>
       </div>
       <div id="rnav">
-          <li v-if="username"> 
+          <li v-if="user"> 
             <a href="/a/new" title="new">new</a>
             <a :href="'/a/user/' + user_id" title="username">{{username}}</a>
             <a href="/a/access" title="Logout" @click="logout">logout</a>
@@ -23,30 +23,31 @@
 </template>
 
 <script>
-export default {
-  name: 'Mnav',
-  data: function () {
-    return { 
-      username: '',
-      user_id: ''
-    }
-  },
-  mounted: function() {
-    if (sessionStorage.getItem('signin_user')){
-        let user_name =  JSON.parse(sessionStorage.getItem('signin_user')).username
-        let user_id =  JSON.parse(sessionStorage.getItem('signin_user')).id
-        this.username = user_name
-        this.user_id = user_id
-    }
-  },
-  methods: {
-    logout() {
-     sessionStorage.removeItem('token')
-     sessionStorage.removeItem('signin_user')
-     this.$router.push('/a/access')
-    }
-  }
-}
+ export default {
+   name: 'Mnav',
+   data () {
+     return {
+       user: sessionStorage.getItem('signin_user'),
+       username: '',
+       user_id: ''
+     }
+   },
+   mounted () {
+     if (sessionStorage.getItem('signin_user')){
+       let user_name =  JSON.parse(sessionStorage.getItem('signin_user')).username
+       let user_id =  JSON.parse(sessionStorage.getItem('signin_user')).id
+       this.username = user_name
+       this.user_id = user_id
+     }
+   },
+   methods: {
+     logout() {
+       sessionStorage.removeItem('token')
+       sessionStorage.removeItem('signin_user')
+       this.$router.push('/a/access')
+     }
+   }
+ }
 </script>
 
 <style lang="css" scoped>
