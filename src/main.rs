@@ -24,12 +24,12 @@ mod share;
 mod router;
 
 fn main() {
-    ::std::env::set_var("RUST_LOG", "wapp=info");
+    ::std::env::set_var("RUST_LOG", "actix_web=info");
     ::std::env::set_var("RUST_BACKTRACE", "1");
     env_logger::init();
     let sys = System::new("wapp");
 
-    server::new( move || 
+    server::new( move ||
         vec![
             router::app_state().boxed(),
             router::app().boxed(),
