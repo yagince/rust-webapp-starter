@@ -1,6 +1,5 @@
 <template>
  <div id="access">
-   <mnav id="mnav"></mnav>
    <div id="content">
         <div id="title">    
             <router-link to="/a/access">Sign In &emsp;|&emsp;</router-link>
@@ -25,12 +24,8 @@
 <script>
 import axios from 'axios'
 import URLprefix from '../../config'
-import Mnav from '../../components/nav/Mnav'
 export default {
   name: 'access',
-  components: {
-    "mnav": Mnav
-  },
   data () {
     return {
       Username: '',

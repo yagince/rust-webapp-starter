@@ -1,6 +1,5 @@
 <template>
   <div  id="wiki">
-      <mnav id="mnav"></mnav>
       <div id="content">
           <p><strong>Wiki</strong> This is the wiki page.</p> <br>
       </div><br>
@@ -8,12 +7,8 @@
 </template>
 
 <script>
-import Mnav from '../../components/nav/Mnav'
 export default {
   name: 'wiki',
-  components: {
-    "mnav": Mnav
-  }
 }
 </script>
 

@@ -1,6 +1,5 @@
 <template>
     <div id="center">
-      <mnav id="mnav"></mnav>
       <div id="top"></div>
       <div id="content">
         <h2><p>Uaer Center</p></h2>
@@ -28,12 +27,8 @@
 import axios from 'axios'
 import URLprefix from '../../config'
 import auth from '../../utils/auth'
-import Mnav from '../../components/nav/Mnav'
 export default {
   name: 'center',
-  components: {
-    "mnav": Mnav
-  },
   data: function() {
     return {
       email: '',
