@@ -2,12 +2,11 @@ use diesel::{self,sql_query,RunQueryDsl,QueryDsl,ExpressionMethods};
 use actix_web::{actix::Handler, error,Error};
 use chrono::Utc;
 use bcrypt::{DEFAULT_COST, hash, verify};
-use jwt::{encode, Header, Algorithm};
 
 use model::user::{User, NewUser, SignupUser, SigninUser, UserInfo, UserUpdate, UserDelete};
 use model::response::{Msgs, SigninMsgs, UserInfoMsgs};
 use model::db::ConnDsl;
-use share::common::Claims;
+use share::common::{ Claims, self};
 use model::response::MyError;
 
 impl Handler<SignupUser> for ConnDsl {
@@ -54,11 +53,10 @@ impl Handler<SigninUser> for ConnDsl {
             Some(login_user) => {
                 match verify(&signin_user.password, &login_user.password) {
                     Ok(valid) => {
-                        let key = "secret";
                         let claims = Claims {
                             user_id: login_user.id.to_string(),
                         };
-                        let token = match encode(&Header::default(), &claims, key.as_ref()) {
+                        let token = match common::encode(&claims) {
                             Ok(t) => t,
                             Err(_) => panic!() // in practice you would return the error
                         };
@@ -115,7 +113,7 @@ impl Handler<UserInfo> for ConnDsl {
                             password: login_user.password,
                             created_at : login_user.created_at,
                     };
-                    Ok(UserInfoMsgs { 
+                    Ok(UserInfoMsgs {
                             status: 200,
                             message : "The  current_user info.".to_string(),
                             current_user: current_user,
@@ -123,7 +121,7 @@ impl Handler<UserInfo> for ConnDsl {
             },
             None => {
                     let no_user = User::new();
-                    Ok(UserInfoMsgs { 
+                    Ok(UserInfoMsgs {
                             status: 400,
                             message : "error.".to_string(),
                             current_user: no_user,
