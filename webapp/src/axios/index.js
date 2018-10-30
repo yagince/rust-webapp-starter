@@ -6,7 +6,9 @@ const http = Axios.create({
   withCredentials: true
 })
 http.interceptors.response.use(
-  (response) => {},
+  (response) => {
+    return response
+  },
   (error) => {
     if (error.response.status === 400) {
       Vue.toasted.clear()
