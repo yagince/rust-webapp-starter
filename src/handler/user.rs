@@ -48,6 +48,7 @@ impl Handler<SigninUser> for ConnDsl {
         use share::schema::users::dsl::*;
         let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
         let login_user =  users.filter(&username.eq(&signin_user.username)).load::<User>(conn).map_err(error::ErrorInternalServerError)?.pop();
+        println!("{:?}", login_user);
         let no_user = User::new();
         match login_user {
             Some(login_user) => {
@@ -68,7 +69,7 @@ impl Handler<SigninUser> for ConnDsl {
                             password: login_user.password.clone(),
                             created_at : login_user.created_at.clone(),
                         };
-                        Ok(SigninMsgs { 
+                        Ok(SigninMsgs {
                             status: 200,
                             token: token,
                             signin_user: the_user,
@@ -76,7 +77,7 @@ impl Handler<SigninUser> for ConnDsl {
                         })
                     },
                     Err(_) => {
-                        Ok(SigninMsgs { 
+                        Ok(SigninMsgs {
                             status: 400,
                             token: "".to_owned(),
                             signin_user: no_user,
@@ -86,7 +87,7 @@ impl Handler<SigninUser> for ConnDsl {
                 }
             },
             None => {
-                Ok(SigninMsgs { 
+                Ok(SigninMsgs {
                     status: 400,
                     token: "".to_owned(),
                     signin_user: no_user,

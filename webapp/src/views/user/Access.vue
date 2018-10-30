@@ -6,6 +6,7 @@
             <router-link to="/a/access">Sign In &emsp;|&emsp;</router-link>
             <router-link to="/a/signup">Sign Up</router-link> 
           </div>
+            {{message}}
             <input type="text" name="username" placeholder="Username" v-model="Username" />
             <input type="password" name="password" placeholder="Password" v-model="Password" /><br/>
           <div id="add">
@@ -25,43 +26,42 @@
 </template>
 
 <script>
-import axios from 'axios'
-import URLprefix from '../../config'
-import Mnav from '../../components/nav/Mnav'
-export default {
-  name: 'access',
-  components: {
-    "mnav": Mnav
-  },
-  data () {
-    return {
-      Username: '',
-      Password: ''
-    }
-  },
-  methods: {
-    signin () {
-      var username = this.Username
-      var password = this.Password
+ import axios from 'axios'
+ import URLprefix from '../../config'
+ import Mnav from '../../components/nav/Mnav'
+ export default {
+   name: 'access',
+   components: {
+     "mnav": Mnav
+   },
+   data () {
+     return {
+       Username: '',
+       Password: '',
+       message: ''
+     }
+   },
+   methods: {
+     signin () {
+       let self = this
+       let username = this.Username
+       let password = this.Password
 
-      axios.post(URLprefix + 'api/signin', {
-          username: username,
-          password: password
-      })
-      .then((response) => {
-        sessionStorage.setItem('token',response.data.token);
-        sessionStorage.setItem('signin_user',JSON.stringify(response.data.signin_user));
-        console.log(response.data.token);
-        console.log(JSON.parse(sessionStorage.getItem('signin_user')).usernmae)
-        window.location.reload ( true ); 
-        this.$router.push('/')
-      })
-      .catch((e) => {
-        console.log(e)
-      })
-    }
-  }
-}
+       this.$http.post(URLprefix + 'api/signin', {
+         username: username,
+         password: password
+       }).then((response) => {
+         console.log(response)
+         sessionStorage.setItem('token',response.data.token);
+         sessionStorage.setItem('signin_user',JSON.stringify(response.data.signin_user));
+         console.log(response.data.token);
+         console.log(JSON.parse(sessionStorage.getItem('signin_user')).usernmae)
+         window.location.reload ( true ); 
+         this.$router.push('/')
+       })
+     }
+   }
+ }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
