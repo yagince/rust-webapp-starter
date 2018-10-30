@@ -10,6 +10,7 @@
     "axios": "^0.17.1",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.17",
+    "vue-material": "^1.0.0-beta-10.2",
     "vue-router": "^3.0.1",
     "vue-toasted": "^1.1.25",
     "vuex": "^3.0.1"
