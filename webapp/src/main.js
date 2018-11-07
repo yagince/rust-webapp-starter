@@ -13,7 +13,7 @@ import 'vue-material/dist/theme/default-dark.css'
 
 Vue.config.productionTip = false
 Vue.use(Vuex)
-Vue.use(VueAxios, axios)
+Vue.use(VueAxios, Axios)
 Vue.use(Toasted)
 Vue.use(VueMaterial)
 
