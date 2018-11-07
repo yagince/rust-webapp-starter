@@ -17,12 +17,13 @@
 import axios from 'axios'
 import URLprefix from '../../config'
 import Mnav from '../../components/nav/Mnav'
+
 export default {
     name: 'article_id',
     components: {
         "mnav": Mnav
     },
-    data: function() {
+    data () {
         return {
             article: ''
         }

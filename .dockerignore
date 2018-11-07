@@ -1,0 +1,6 @@
+.git
+tmp/*
+log/*
+
+Dockerfile*
+target/*
