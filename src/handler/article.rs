@@ -12,7 +12,7 @@ impl Handler<ArticleList> for ConnDsl {
         use share::schema::article::dsl::*;
         let conn = &self.0.get().map_err(error::ErrorInternalServerError)?;
         let articles = article.load::<Article>(conn).map_err(error::ErrorInternalServerError)?;
-        Ok(ArticleListMsgs { 
+        Ok(ArticleListMsgs {
             status: 200,
             message : "article_list result Success.".to_string(),
             article_list: articles,

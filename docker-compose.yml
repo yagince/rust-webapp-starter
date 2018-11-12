@@ -23,7 +23,7 @@ services:
     depends_on:
       - postgres
     ports:
-     - "18000:8000"
+     - "28000:8000"
   web:
     container_name: web
     build:
@@ -31,7 +31,7 @@ services:
     working_dir: '/app/webapp'
     command: yarn run serve
     ports:
-     - "18080:8080"
+     - "28080:8080"
     volumes:
       - .:/app
     depends_on:
