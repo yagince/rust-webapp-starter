@@ -16,6 +16,8 @@ RUN apt-get -y -q update \
      libpq-dev \
   && cargo install diesel_cli --no-default-features --features postgres
 
+ENV CARGO_BUILD_TARGET_DIR=/tmp/target
+
 RUN USER=root cargo new --bin app
 WORKDIR /app
 COPY ./Cargo.toml Cargo.toml
